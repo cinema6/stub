@@ -1,26 +1,32 @@
 // Karma configuration
 
 // base path, that will be used to resolve files and exclude
-basePath = '';
+basePath = '..';
 
 // list of files / patterns to load in the browser
 files = [
   JASMINE,
   JASMINE_ADAPTER,
-  '../app/assets/lib/require/require.js',
-  '../app/assets/lib/angular/angular.js',
-  '../app/assets/lib/angular/angular-mocks.js',
-  '../app/assets/scripts/main.js',
-  '../app/assets/scripts/app.js',
-  '../app/assets/scripts/services/services.js',
-  '../app/assets/scripts/controllers/controllers.js',
-  '../app/assets/scripts/directives/directives.js',
-  '../app/assets/scripts/animations/animations.js',
-  'spec/**/*.js'
+  REQUIRE,
+  REQUIRE_ADAPTER,
+  
+  {pattern: 'app/assets/lib/**/*.js',       included: false},
+  {pattern: 'app/assets/scripts/**/*.js',   included: false},
+  {pattern: 'app/assets/views/*.html',      included: false},
+  {pattern: 'test/spec/*.js',               included: false},
+
+  'test/globals_ut.js',
+  'test/test-main.js'
 ];
 
 // list of files to exclude
-exclude = [];
+exclude = [
+    'app/assets/scripts/main.js'
+];
+
+preprocessors = {
+    '**/views/*.html' : 'html2js'
+};
 
 // test results reporter to use
 // possible values: dots || progress || growl
@@ -40,7 +46,7 @@ colors = true;
 logLevel = LOG_INFO;
 
 // enable / disable watching file and executing tests whenever any file changes
-autoWatch = false;
+autoWatch = true;
 
 // Start these browsers, currently available:
 // - Chrome

@@ -1,33 +1,22 @@
 // Karma E2E configuration
 
 // base path, that will be used to resolve files and exclude
-basePath = '';
+basePath = '..'
 
 // list of files / patterns to load in the browser
 files = [
-/*
- * TODO: Replace with your relevant files
- *
-  '../app/assets/lib/jquery/jquery.min.js',
-  '../app/assets/lib/angular/angular.min.js',
-  '../app/assets/lib/greensock/TimelineMax.min.js',
-  '../app/assets/lib/greensock/TweenMax.min.js',
-  '../app/assets/lib/c6media/c6lib.video.js',
-  'e2e/env.js',
-  '../app/assets/scripts/c6/app.js',
-  '../app/assets/scripts/c6/services/services.js',
-  '../app/assets/scripts/c6/controllers/controllers.js',
-  '../app/assets/scripts/c6/animations/animations.js',
-  '../app/assets/scripts/c6/directives/directives.js',
-  '../app/assets/scripts/c6/directives/videonode.js',
-*/
   ANGULAR_SCENARIO,
   ANGULAR_SCENARIO_ADAPTER,
-  'e2e/**/*.js'
+  {pattern: 'app/assets/lib/**/*.js',       included: false},
+  {pattern: 'app/assets/scripts/**/*.js',   included: false},
+  //'test/e2e/env.js',
+  'test/e2e/**/tests.js'
 ];
 
 // list of files to exclude
-exclude = [];
+exclude = [
+//    'app/assets/scripts/main.js'
+];
 
 // test results reporter to use
 // possible values: dots || progress || growl
@@ -37,14 +26,14 @@ reporters = ['progress'];
 port = 8080;
 
 // cli runner port
-runnerPort = 9100;
+runnerPort = 9101;
 
 // enable / disable colors in the output (reporters and logs)
 colors = true;
 
 // level of logging
 // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
-logLevel = LOG_INFO;
+logLevel = LOG_DEBUG;
 
 // enable / disable watching file and executing tests whenever any file changes
 autoWatch = false;
@@ -64,7 +53,7 @@ captureTimeout = 5000;
 
 // Continuous Integration mode
 // if true, it capture browsers, run tests and exit
-singleRun = false;
+singleRun = true;
 
 proxies =  {
   '/': 'http://localhost:9000'

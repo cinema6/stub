@@ -13,8 +13,11 @@
     <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 
     <!--<script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>-->
+
+    <!-- This is used by karam e2e test and will be removed by grunt build -->
+    <script type="text/javascript"> angular.module("e2e",[]); </script>
   </head>
-  <body>
+  <body ng-app="e2e">
       <!--
     <div class="experience">
         <span class="c6bar">&nbsp;</span> 

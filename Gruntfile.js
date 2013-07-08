@@ -1,6 +1,7 @@
 /* jshint -W097 */
 'use strict';
-var _path       = require('path'),
+var path        = require('path'),
+    fs          = require('fs-extra'),
     lrSnippet   = require('grunt-contrib-livereload/lib/utils').livereloadSnippet,
     mountFolder = function (connect, dir) {
             return connect.static(require('path').resolve(dir));
@@ -10,20 +11,38 @@ module.exports = function (grunt) {
     // load all grunt tasks
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-    // configurable paths
-    var getPackageVersion = function() {
-            var pkg       = grunt.file.readJSON(_path.join(__dirname,'package.json'));
-            return 'v' + pkg.version.replace(/\./g,'_');
-        },
-        initConfig = {
-            app:    _path.join(__dirname,'app'),
-            dist:   _path.join(__dirname,'dist'),
-            version: getPackageVersion(),
-            distVer: function() { return _path.join(this.dist, this.version); }
+    var initProps = {
+            prefix      : process.env.HOME,
+            app         : path.join(__dirname,'app'),
+            dist        : path.join(__dirname,'dist'),
+            packageInfo : grunt.file.readJSON('package.json')
         };
 
+    initProps.version     = function(){
+        return this.gitLastCommit.commit;
+    };
+
+    initProps.name        = function() {
+        return this.packageInfo.name;
+    };
+
+    initProps.installDir = function() {
+        return (this.name() + '.' +
+                this.gitLastCommit.date.toISOString().replace(/\W/g,'') + '.' +
+                this.gitLastCommit.commit);
+    };
+    initProps.installPath = function(){
+        return (path.join(this.prefix, 'releases', this.installDir()));
+    };
+    initProps.linkPath = function(){
+        return path.join(this.prefix, 'www' );
+    };
+    initProps.distVersionPath= function() {
+        return path.join(this.dist, this.gitLastCommit.commit);
+    };
+
     grunt.initConfig({
-        settings: initConfig,
+        settings: initProps,
         smadd : {
             angular : { git : 'git@github.com:cinema6/angular.js.git' },
             jquery  : { git : 'git@github.com:cinema6/jquery.git' },
@@ -61,7 +80,7 @@ module.exports = function (grunt) {
                         return [
                             lrSnippet,
                             mountFolder(connect, '.tmp'),
-                            mountFolder(connect, initConfig.app)
+                            mountFolder(connect, initProps.app)
                         ];
                     }
                 }
@@ -72,7 +91,7 @@ module.exports = function (grunt) {
                         return [
                             mountFolder(connect, '.tmp'),
                             mountFolder(connect, 'test'),
-                            mountFolder(connect, initConfig.app)
+                            mountFolder(connect, initProps.app)
                         ];
                     }
                 }
@@ -83,7 +102,6 @@ module.exports = function (grunt) {
                 url: 'http://localhost:<%= connect.options.port %>'
             }
         },
-        bumpup: 'package.json',
         clean: {
             dist: {
                 files: [{
@@ -101,13 +119,35 @@ module.exports = function (grunt) {
         sed: {
             index: {
                 pattern: 'assets',
-                replacement: '<%= settings.version %>',
+                replacement: '<%= settings.version() %>',
+                path: '<%= settings.dist %>/index.html'
+            },
+            index2: {
+                pattern: 'body ng-app="e2e"',
+                replacement: 'body',
+                path: '<%= settings.dist %>/index.html'
+            },
+            index3: {
+                pattern: '<script type="text/javascript"> angular.module\\("e2e",\\[\\]\\); </script>',
+                replacement: '',
                 path: '<%= settings.dist %>/index.html'
             },
             main: {
                 pattern: 'undefined',
-                replacement: '\'<%= settings.version %>\'',
-                path: '<%= settings.distVer() %>/scripts/main.js'
+                replacement: '\'<%= settings.version() %>\'',
+                path: '<%= settings.distVersionPath() %>/scripts/main.js'
+            },
+            scripts: {
+                pattern: 'assets',
+                replacement: '<%= settings.version() %>',
+                path: '<%= settings.distVersionPath() %>/scripts/',
+                recursive : true,
+            },
+            views: {
+                pattern: 'assets',
+                replacement: '<%= settings.version() %>',
+                path: '<%= settings.distVersionPath() %>/views/',
+                recursive : true,
             }
         },
         jshint: {
@@ -147,7 +187,7 @@ module.exports = function (grunt) {
                 expand: true,
                 flatten: true,
                 src:    ['<%= settings.app %>/assets/styles/{,*/}*.css'],
-                dest: '<%= settings.distVer() %>/styles/'
+                dest:   '<%= settings.distVersionPath() %>/styles/'
             }
         },
         htmlmin: {
@@ -174,7 +214,7 @@ module.exports = function (grunt) {
                         expand: true,
                         cwd: '<%= settings.app %>/assets',
                         src: ['views/*.html'],
-                        dest: '<%= settings.distVer() %>'
+                        dest: '<%= settings.distVersionPath() %>'
                     }
                 ]
             }
@@ -182,7 +222,7 @@ module.exports = function (grunt) {
         uglify: {
             dist: {
                 files: {
-                    '<%= settings.distVer() %>/scripts/c6app.min.js': [
+                    '<%= settings.distVersionPath() %>/scripts/c6app.min.js': [
                         '.tmp/scripts/c6app.js'
                     ],
                 }
@@ -205,13 +245,27 @@ module.exports = function (grunt) {
                         expand: true,
                         dot: true,
                         cwd: '<%= settings.app %>/assets',
-                        dest: '<%= settings.distVer() %>',
+                        dest: '<%= settings.distVersionPath() %>',
                         src: [
+                            'views/**',
+                            'data/**',
                             'img/**',
                             'media/**',
                             'lib/**',
-                            'scripts/main.js'
+                            'scripts/main.js',
+                            'scripts/ext/**'
                         ]
+                    }
+                ]
+            },
+            release:    {
+                files:  [
+                    {
+                        expand : true,
+                        dot    : true,
+                        cwd    : path.join(__dirname,'dist'),
+                        src    : ['**'],
+                        dest   : '<%= settings.installPath() %>',
                     }
                 ]
             },
@@ -220,23 +274,27 @@ module.exports = function (grunt) {
                     {
                         expand : true,
                         dot    : true,
-                        cwd    : _path.join(__dirname,'dist'),
+                        cwd    : path.join(__dirname,'dist'),
                         src    : ['**'],
                         dest   : '/usr/local/share/nginx/demos/stub'
                     }
                 ]
             }
+        },
+        link : {
+            options : {
+                overwrite: true,
+                force    : true,
+                mode     : '755'
+            },
+            www : {
+                target : '<%= settings.installPath() %>',
+                link   : path.join('<%= settings.linkPath() %>','<%= settings.name() %>')
+            }
         }
     });
 
     grunt.renameTask('regarde', 'watch');
-
-    grunt.registerTask('updatePackageVersion', function(){
-        var settings     = grunt.config.get('settings');
-        settings.version = getPackageVersion();
-        grunt.config.set('settings',settings);
-        grunt.log.writeln('Package Version is: ' + settings.version);
-    });
 
     grunt.registerTask('server', [
         'clean:server',
@@ -255,32 +313,213 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('build', [
+        'gitLastCommit',
         'clean:dist',
-        'test',
         'cssmin',
         'htmlmin',
         'concat',
         'copy:dist',
-        'uglify'
+        'uglify',
+        'sed'
     ]);
 
     grunt.registerTask('release',function(type){
         type = type ? type : 'patch';
-        grunt.task.run('clean:dist');
-        grunt.task.run('test');
-        grunt.task.run('bumpup:' + type);
-        grunt.task.run('updatePackageVersion');
-        grunt.task.run('cssmin');
-        grunt.task.run('htmlmin');
-        grunt.task.run('concat');
-        grunt.task.run('copy:dist');
-        grunt.task.run('uglify');
-        grunt.task.run('sed');
-        grunt.task.run('clean:local');
-        grunt.task.run('copy:local');
+        //grunt.task.run('test');
+        grunt.task.run('build');
     });
 
     grunt.registerTask('default', ['build']);
+
+    grunt.registerTask('mvbuild', 'Move the build to a release folder.', function(){
+        if (grunt.config.get('moved')){
+            grunt.log.writeln('Already moved!');
+            return;
+        }
+        var settings = grunt.config.get('settings'),
+            installPath = settings.installPath();
+        grunt.log.writeln('Moving the module to ' + installPath);
+        grunt.task.run('copy:release');
+        grunt.config.set('moved',true);
+    });
+
+    grunt.registerMultiTask('link', 'Link release apps.', function(){
+        var opts = grunt.config.get('link.options'),
+            data = this.data;
+
+        if (!opts) {
+            opts = {};
+        }
+
+        if (!data.options){
+            data.options = {};
+        }
+
+        if (!opts.mode){
+            opts.mode = '0755';
+        }
+
+        if (opts){
+            Object.keys(opts).forEach(function(opt){
+                if (data.options[opt] === undefined){
+                    data.options[opt] = opts[opt];
+                }
+            });
+        }
+
+        if (data.options.overwrite === true){
+            if (fs.existsSync(data.link)){
+                grunt.log.writelns('Removing old link: ' + data.link);
+                fs.unlinkSync(data.link);
+            }
+        }
+
+        if (data.options.force){
+            var linkDir = path.dirname(data.link);
+            if (!fs.existsSync(linkDir)){
+                grunt.log.writelns('Creating linkDir: ' + linkDir);
+                grunt.file.mkdir(linkDir, '0755');
+            }
+        }
+
+        grunt.log.writelns('Create link: ' + data.link + ' ==> ' + data.target);
+        fs.symlinkSync(data.target, data.link);
+
+        grunt.log.writelns('Make link executable.');
+        fs.chmodSync(data.link,data.options.mode);
+
+        grunt.log.writelns(data.link + ' is ready.');
+    });
+
+    grunt.registerTask('installCheck', 'Install check', function(){
+        var settings = grunt.config.get('settings'),
+            installPath = settings.installPath();
+
+        if (fs.existsSync(installPath)){
+            grunt.log.errorlns('Install dir (' + installPath +
+                                ') already exists.');
+            return false;
+        }
+    });
+
+    grunt.registerTask('install', [
+        'gitLastCommit',
+        'installCheck',
+        'release',
+        'mvbuild',
+        'link',
+        'installCleanup'
+    ]);
+
+    grunt.registerTask('installCleanup', [
+        'gitLastCommit',
+        'rmbuild'
+    ]);
+
+    grunt.registerTask('rmbuild','Remove old copies of the install',function(){
+        this.requires(['gitLastCommit']);
+        var settings       = grunt.config.get('settings'),
+            installBase = settings.name(),
+            installPath = settings.installPath(),
+            installRoot = path.dirname(installPath),
+            pattPart = new RegExp(installBase),
+            pattFull = new RegExp(installBase +  '.(\\d{8})T(\\d{9})Z'),
+            history     = grunt.config.get('rmbuild.history'),
+            contents = [];
+
+        if (history === undefined){
+            history = 4;
+        }
+        grunt.log.writelns('Max history: ' + history);
+
+        fs.readdirSync(installRoot).forEach(function(dir){
+            if (pattPart.test(dir)){
+                contents.push(dir);
+            }
+        });
+
+        if (contents){
+            var sorted = contents.sort(function(A,B){
+                var mA = pattPart.exec(A),
+                    mB = pattPart.exec(B),
+                    i;
+                // The version is the same
+                mA = pattFull.exec(A);
+                mB = pattFull.exec(B);
+                if (mA === null) { return 1; }
+                if (mB === null) { return -1; }
+                for (i = 1; i <= 2; i++){
+                    if (mA[i] !== mB[i]){
+                        return mA[i] - mB[i];
+                    }
+                }
+                return 1;
+            });
+            while (sorted.length > history){
+                var dir = sorted.shift();
+                grunt.log.writelns('remove: ' + dir);
+                fs.removeSync(path.join(installRoot,dir));
+            }
+        }
+    });
+
+    grunt.registerTask('gitLastCommit','Get a version number using git commit', function(){
+        var settings = grunt.config.get('settings'),
+            done = this.async(),
+            handleVersionData = function(data){
+                if ((data.commit === undefined) || (data.date === undefined)){
+                    grunt.log.errorlns('Failed to parse version.');
+                    return done(false);
+                }
+                data.date = new Date(data.date * 1000);
+                settings.gitLastCommit = data;
+                grunt.log.writelns('Last git Commit: ' +
+                    JSON.stringify(settings.gitLastCommit,null,3));
+                grunt.config.set('settings',settings);
+                return done(true);
+            };
+
+        if (settings.gitLastCommit){
+            return done(true);
+        }
+
+        if (grunt.file.isFile('version.json')){
+            return handleVersionData(grunt.file.readJSON('version.json'));
+        }
+
+        grunt.util.spawn({
+            cmd     : 'git',
+            args    : ['log','-n1','--format={ "commit" : "%h", "date" : "%ct" , "subject" : "%s" }']
+        },function(err,result){
+            if (err) {
+                grunt.log.errorlns('Failed to get gitLastCommit: ' + err);
+                return done(false);
+            }
+            handleVersionData(JSON.parse(result.stdout));
+        });
+    });
+
+    grunt.registerTask('gitstatus','Make surethere are no pending commits', function(){
+        var done = this.async();
+        grunt.util.spawn({
+            cmd     : 'git',
+            args    : ['status','--porcelain']
+        },function(err,result){
+            if (err) {
+                grunt.log.errorlns('Failed to get git status: ' + err);
+                done(false);
+            }
+            if (result.stdout === '""'){
+                grunt.log.writelns('No pending commits.');
+                done(true);
+            }
+            grunt.log.errorlns('Please commit pending changes');
+            grunt.log.errorlns(result.stdout.replace(/\"/g,''));
+            done(false);
+        });
+    });
+
+
 
     grunt.registerMultiTask('smadd','Add submodules',function(){
         var target  = this.target,
@@ -291,7 +530,42 @@ module.exports = function (grunt) {
             }),
             done    = this.async();
         if (!opts.subDir){
-            opts.subDir = _path.join(opts.rootDir,opts.alias);
+            opts.subDir = path.join(opts.rootDir,opts.alias);
+        }
+
+        grunt.log.writelns('Add submodule for: ' + target);
+        grunt.util.spawn({
+            cmd : 'git',
+            args : ['submodule','add',data.git,opts.subDir]
+        },function(error/*,result,code*/){
+            if (error) {
+                grunt.log.errorlns('submodule add failed: ' + error);
+                done(false);
+                return;
+            }
+
+            grunt.util.spawn({ cmd : 'git', args : ['init'] },function(err/*,result,code*/){
+                if (err) {
+                    grunt.log.errorlns('submodule init failed: ' + err);
+                    done(false);
+                } else {
+                    done(true);
+                }
+            });
+        });
+    });
+
+
+    grunt.registerMultiTask('smadd','Add submodules',function(){
+        var target  = this.target,
+            data    = this.data,
+            opts    = this.options({
+                rootDir : 'vendor',
+                alias   : this.target
+            }),
+            done    = this.async();
+        if (!opts.subDir){
+            opts.subDir = path.join(opts.rootDir,opts.alias);
         }
 
         grunt.log.writelns('Add submodule for: ' + target);
@@ -354,8 +628,8 @@ module.exports = function (grunt) {
                         cont = true,targetFile,abspath;
                     files.forEach(function(file){
                         if (cont){
-                            abspath     = _path.join(opts.build,file);
-                            targetFile  = _path.join(opts.target,file);
+                            abspath     = path.join(opts.build,file);
+                            targetFile  = path.join(opts.target,file);
                             grunt.file.copy(abspath,targetFile);
                             if (!grunt.file.exists(targetFile)) {
                                 next( new Error('Failed to copy ' + abspath +
@@ -392,15 +666,15 @@ module.exports = function (grunt) {
                 };
 
         if (!opts.source){
-            opts.source = _path.join(opts.rootDir,opts.alias);
+            opts.source = path.join(opts.rootDir,opts.alias);
         }
 
         if (!opts.target){
-            opts.target = _path.join(opts.libDir,opts.alias);
+            opts.target = path.join(opts.libDir,opts.alias);
         }
 
         if (!opts.build){
-            opts.build = _path.join(opts.rootDir,opts.alias,opts.buildDir);
+            opts.build = path.join(opts.rootDir,opts.alias,opts.buildDir);
         }
 
         if (opts.npm){
