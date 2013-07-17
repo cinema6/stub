@@ -40,6 +40,13 @@ module.exports = function (grunt) {
     initProps.distVersionPath= function() {
         return path.join(this.dist, this.gitLastCommit.commit);
     };
+    
+    if ((process.env.HOME) && (fs.existsSync(path.join(process.env.HOME,'.aws.json')))){
+        initProps.aws = grunt.file.readJSON(
+                path.join(process.env.HOME,'.aws.json')
+        );
+    }
+
 
     grunt.initConfig({
         settings: initProps,
@@ -113,8 +120,7 @@ module.exports = function (grunt) {
                     ]
                 }]
             },
-            server: '.tmp',
-            local: '/usr/local/share/nginx/demos/screenjack'
+            server: '.tmp'
         },
         sed: {
             index: {
@@ -268,15 +274,27 @@ module.exports = function (grunt) {
                         dest   : '<%= settings.installPath() %>',
                     }
                 ]
+            }
+        },
+        s3: {
+            options: {
+                key:    '<%= settings.aws.accessKeyId %>',
+                secret: '<%= settings.aws.secretAccessKey %>',
+                bucket: 'demos.cinema6.com',
+                access: 'public-read',
+                maxOperations: 4
             },
-            local:    {
-                files:  [
+            stub: {
+                upload: [
                     {
-                        expand : true,
-                        dot    : true,
-                        cwd    : path.join(__dirname,'dist'),
-                        src    : ['**'],
-                        dest   : '/usr/local/share/nginx/demos/stub'
+                        src: 'dist/**',
+                        dest: 'stub/',
+                        rel : 'dist/'
+                    },
+                    {
+                        src: 'dist/index.html',
+                        dest: 'stub/index.html',
+                        headers : { 'cache-control' : 'max-age=0' }
                     }
                 ]
             }
@@ -327,6 +345,13 @@ module.exports = function (grunt) {
         type = type ? type : 'patch';
         //grunt.task.run('test');
         grunt.task.run('build');
+    });
+    
+    grunt.registerTask('publish',function(type){
+        type = type ? type : 'patch';
+    //    grunt.task.run('test');
+        grunt.task.run('build');
+        grunt.task.run('s3');
     });
 
     grunt.registerTask('default', ['build']);
