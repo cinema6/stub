@@ -37,9 +37,11 @@ var __C6_BUILD_VERSION__ = undefined,
                 'lib/gsap/TweenMax.min'], function(){
 
         require(['lib/angular/angular.min'],function(){
-            require(['lib/c6media/c6lib.video.min'],function(){
-                loadScriptsInOrder(appScripts,function(){
-                    angular.bootstrap(document, ['c6.stubApp']);
+            require(['lib/ui-router/angular-ui-router.min'],function(){
+                require(['lib/c6media/c6lib.video.min'],function(){
+                    loadScriptsInOrder(appScripts,function(){
+                        angular.bootstrap(document, ['c6.stubApp']);
+                    });
                 });
             });
         });

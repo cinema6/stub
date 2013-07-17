@@ -246,24 +246,42 @@ angular.module('c6lib.video', [])
 	});
 
 	// Respond to events specified from attributes
-	$attrs.$observe('on', function(on) {
-		if (on) {
-			var pairs = on.split(',');
+	$attrs.$observe('c6Events', function(config) {
+		var event,
+			options,
+			vidEventHandler = function(event, video) {
+				var expression = config[event.type].exp,
+					workingScope = $scope.$parent.$new();
 
-			pairs.forEach(function(pair) {
-				var keyValue = pair.split(':'),
-					key = keyValue[0].trim(),
-					valuePaths = keyValue[1].trim().split('.'),
-					targetFunction = $scope.$parent;
+				workingScope.c6 = {
+					event: event,
+					video: video
+				};
 
-				valuePaths.forEach(function(path) {
-					targetFunction = targetFunction[path];
-				});
+				workingScope.$eval(expression);
+				workingScope.$destroy();
+				workingScope = null;
+			},
+			ngEventHandler = function(event) {
+				var expression = 'c6video.' + config[event.name].exp;
 
-				c6video.on(key, function(event, player) {
-					targetFunction(event, player);
-				});
-			});
+				// Put the wrapper on the scope JUST so we can call an expression against it.
+				$scope.c6video = c6video;
+				$scope.$eval(expression);
+				// Delete the wrapper from the scope.
+				delete $scope.c6video;
+			};
+
+		config = $scope.$eval(config);
+
+		for (event in config) {
+			options = config[event] = (typeof config[event] === 'object') ? config[event] : { exp: config[event], source: 'vid' };
+
+			if (options.source === 'ng') {
+				$scope.$on(event, ngEventHandler);
+			} else {
+				c6video.on(event, vidEventHandler);
+			}
 		}
 	});
 
@@ -310,7 +328,6 @@ angular.module('c6lib.video', [])
 		scope: {
 			c6Src: '&',
 			c6Controls: '&',
-			on: '@',
 			id: '@'
 		}
 	};

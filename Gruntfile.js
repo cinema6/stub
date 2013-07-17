@@ -51,10 +51,11 @@ module.exports = function (grunt) {
     grunt.initConfig({
         settings: initProps,
         smadd : {
-            angular : { git : 'git@github.com:cinema6/angular.js.git' },
-            jquery  : { git : 'git@github.com:cinema6/jquery.git' },
-            gsap    : { git : 'git@github.com:cinema6/GreenSock-JS.git' },
-            c6media : { git : 'git@github.com:cinema6/c6Media.git' }
+            angular  : { git : 'git@github.com:cinema6/angular.js.git' },
+            jquery   : { git : 'git@github.com:cinema6/jquery.git' },
+            gsap     : { git : 'git@github.com:cinema6/GreenSock-JS.git' },
+            c6media  : { git : 'git@github.com:cinema6/c6Media.git' },
+            'ui-router' : { git : 'git@github.com:cinema6/ui-router.git' }
         },
         smbuild : {
             angular : { options : { args : ['package'], buildDir : 'build'  } },
@@ -62,6 +63,7 @@ module.exports = function (grunt) {
             c6media : { options : { args : ['build'],   buildDir : 'dist' } },
             gsap    : { options : { args : [],          buildDir : 'src/minified',
                              npm : false, grunt : false } } ,
+            'ui-router' : { options : { args : [], buildDir : 'build'  } }
         },
         watch: {
             livereload: {
