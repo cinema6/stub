@@ -17,10 +17,10 @@ $> git clone --bare git@github.com:cinema6/stub.git
   3) Next, clone the new empty repository.
 
 ```bash
-$> git clone --bare git@github.com:cinema6/my-new-project.git
+$> git clone git@github.com:cinema6/my-new-project.git
 ```
 
-  4) Enter the sbut directory.  Checkout its source to the new project directory.
+  4) Enter the stub.git directory.  Checkout its source to the new project directory.
 
 ```bash
 $> cd stub.git
