@@ -17,14 +17,8 @@
     <!-- This is used by karam e2e test and will be removed by grunt build -->
     <script type="text/javascript"> angular.module("e2e",[]); </script>
   </head>
-  <body ng-app="e2e">
-      <!--
-    <div class="experience">
-        <span class="c6bar">&nbsp;</span> 
-      <div ng-view ng-animate="currentRoute + '-partial'"></div> 
-  </div>  
-    -->
-        <div ng-view></div>
+  <body ng-app="e2e" ng-controller="c6AppCtlr">
+    <ui-view ng-animate="'view'"></ui-view>
     <script data-main="assets/scripts/main" src="assets/lib/require/require.min.js"></script>
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
     <script>

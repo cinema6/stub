@@ -55,14 +55,18 @@ module.exports = function (grunt) {
             jquery   : { git : 'git@github.com:cinema6/jquery.git' },
             gsap     : { git : 'git@github.com:cinema6/GreenSock-JS.git' },
             c6media  : { git : 'git@github.com:cinema6/c6Media.git' },
+            c6ui     : { git : 'git@github.com:cinema6/c6ui.git' },
+            'hammer.js' : { git : 'git@github.com:cinema6/hammer.js.git' },
             'ui-router' : { git : 'git@github.com:cinema6/ui-router.git' }
         },
         smbuild : {
             angular : { options : { args : ['package'], buildDir : 'build'  } },
             jquery  : { options : { args : [],          buildDir : 'dist' } },
             c6media : { options : { args : ['build'],   buildDir : 'dist' } },
+            c6ui    : { options : { args : ['build'],   buildDir : 'dist' } },
             gsap    : { options : { args : [],          buildDir : 'src/minified',
                              npm : false, grunt : false } } ,
+            'hammer.js' : { options : { args : ['build'],   buildDir : 'dist' } },
             'ui-router' : { options : { args : [], buildDir : 'build'  } }
         },
         watch: {
@@ -168,6 +172,10 @@ module.exports = function (grunt) {
             ]
         },
         karma: {
+            debug: {
+                configFile: 'test/karma.conf.js',
+                singleRun: false
+            },
             unit: {
                 configFile: 'test/karma.conf.js',
                 singleRun: true
