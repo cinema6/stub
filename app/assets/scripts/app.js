@@ -1,7 +1,7 @@
 /* jshint -W106 */
 (function(window$){
     'use strict';
-   
+
     if (window$.location.toString().match(/cinema6\.com/) !== null){
         ga('create', 'UA-44457821-1', 'cinema6.com');
     } else {
@@ -54,8 +54,20 @@
                     url: '/'
                 });
         }])
-        .controller('c6AppCtlr',['$scope','$state','$log','c6Defines',
-            function($scope,$state,$log,c6Defines){
+        .controller('c6AppCtlr',['$scope','$state','$log','$location',
+            function($scope,$state,$log,$location){
                 $log.info('AppCtlr loaded.');
-         }]);
+
+                $scope.$on('$stateChangeSuccess',
+                    function(event,toState,toParams,fromState/*,fromParams*/){
+                    $log.info('State Change Success: ' + fromState.name +
+                                            ' ===> ' + toState.name);
+
+                    ga('send','pageview', {
+                        'page'  : $location.absUrl(),
+                        'title' : 'stub ' + toState.name
+                    });
+                });
+            }
+         ]);
 }(window));

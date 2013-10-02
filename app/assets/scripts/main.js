@@ -22,11 +22,11 @@ var __C6_BUILD_VERSION__ = undefined,
             done();
         };
     if (__C6_BUILD_VERSION__) {
-        appScripts = [ 
-            'scripts/c6app.min' 
+        appScripts = [
+            'scripts/c6app.min'
         ];
     } else {
-        appScripts = [  
+        appScripts = [
             'lib/c6ui/browser/browser',
             'lib/c6ui/mouseactivity/mouseactivity',
             'lib/c6ui/computed/computed',

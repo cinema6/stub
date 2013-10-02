@@ -29,7 +29,7 @@ module.exports = function (grunt) {
     initProps.distVersionPath= function() {
         return path.join(this.dist, this.gitLastCommit.commit);
     };
-    
+
     if ((process.env.HOME) && (fs.existsSync(path.join(process.env.HOME,'.aws.json')))){
         initProps.aws = grunt.file.readJSON(
                 path.join(process.env.HOME,'.aws.json')
