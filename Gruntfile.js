@@ -26,17 +26,6 @@ module.exports = function (grunt) {
         return this.packageInfo.name;
     };
 
-    initProps.installDir = function() {
-        return (this.name() + '.' +
-                this.gitLastCommit.date.toISOString().replace(/\W/g,'') + '.' +
-                this.gitLastCommit.commit);
-    };
-    initProps.installPath = function(){
-        return (path.join(this.prefix, 'releases', this.installDir()));
-    };
-    initProps.linkPath = function(){
-        return path.join(this.prefix, 'www' );
-    };
     initProps.distVersionPath= function() {
         return path.join(this.dist, this.gitLastCommit.commit);
     };
@@ -54,7 +43,6 @@ module.exports = function (grunt) {
             angular  : { git : 'git@github.com:cinema6/angular.js.git' },
             jquery   : { git : 'git@github.com:cinema6/jquery.git' },
             gsap     : { git : 'git@github.com:cinema6/GreenSock-JS.git' },
-            c6media  : { git : 'git@github.com:cinema6/c6Media.git' },
             c6ui     : { git : 'git@github.com:cinema6/c6ui.git' },
             'hammer.js' : { git : 'git@github.com:cinema6/hammer.js.git' },
             'ui-router' : { git : 'git@github.com:cinema6/ui-router.git' }
@@ -62,7 +50,6 @@ module.exports = function (grunt) {
         smbuild : {
             angular : { options : { args : ['package'], buildDir : 'build'  } },
             jquery  : { options : { args : [],          buildDir : 'dist' } },
-            c6media : { options : { args : ['build'],   buildDir : 'dist' } },
             c6ui    : { options : { args : ['build'],   buildDir : 'dist' } },
             gsap    : { options : { args : [],          buildDir : 'src/minified',
                              npm : false, grunt : false } } ,
@@ -189,6 +176,13 @@ module.exports = function (grunt) {
             dist: {
                 files: {
                     '.tmp/scripts/c6app.js' : [
+                        '<%= settings.app %>/assets/lib/c6ui/c6ui.js',
+                        '<%= settings.app %>/assets/lib/c6ui/browser/browser.js',
+                        '<%= settings.app %>/assets/lib/c6ui/mouseactivity/mouseactivity.js',
+                        '<%= settings.app %>/assets/lib/c6ui/computed/computed.js',
+                        '<%= settings.app %>/assets/lib/c6ui/controls/controls.js',
+                        '<%= settings.app %>/assets/lib/c6ui/anicache/anicache.js',
+                        '<%= settings.app %>/assets/lib/c6ui/sfx/sfx.js',
                         '<%= settings.app %>/assets/scripts/app.js',
                         '<%= settings.app %>/assets/scripts/services/services.js',
                         '<%= settings.app %>/assets/scripts/controllers/controllers.js',
@@ -273,17 +267,6 @@ module.exports = function (grunt) {
                         ]
                     }
                 ]
-            },
-            release:    {
-                files:  [
-                    {
-                        expand : true,
-                        dot    : true,
-                        cwd    : path.join(__dirname,'dist'),
-                        src    : ['**'],
-                        dest   : '<%= settings.installPath() %>',
-                    }
-                ]
             }
         },
         s3: {
@@ -294,7 +277,7 @@ module.exports = function (grunt) {
                 access: 'public-read',
                 maxOperations: 4
             },
-            stub: {
+            demo: {
                 upload: [
                     {
                         src: 'dist/**',
@@ -303,21 +286,37 @@ module.exports = function (grunt) {
                     },
                     {
                         src: 'dist/index.html',
+                        dest: 'stub/<%= settings.version() %>/index.html',
+                        headers : { 'cache-control' : 'max-age=0' }
+                    },
+                    {
+                        src: 'dist/index.html',
                         dest: 'stub/index.html',
                         headers : { 'cache-control' : 'max-age=0' }
                     }
                 ]
-            }
-        },
-        link : {
-            options : {
-                overwrite: true,
-                force    : true,
-                mode     : '755'
             },
-            www : {
-                target : '<%= settings.installPath() %>',
-                link   : path.join('<%= settings.linkPath() %>','<%= settings.name() %>')
+            test: {
+                options: {
+                    bucket: 'c6.dev'
+                },
+                upload: [
+                    {
+                        src: 'dist/**',
+                        dest: 'www/stub/',
+                        rel : 'dist/'
+                    },
+                    {
+                        src: 'dist/index.html',
+                        dest: 'www/stub/<%= settings.version() %>/index.html',
+                        headers : { 'cache-control' : 'max-age=0' }
+                    },
+                    {
+                        src: 'dist/index.html',
+                        dest: 'www/stub/index.html',
+                        headers : { 'cache-control' : 'max-age=0' }
+                    }
+                ]
             }
         }
     });
@@ -351,152 +350,17 @@ module.exports = function (grunt) {
         'sed'
     ]);
 
-    grunt.registerTask('release',function(type){
-        type = type ? type : 'patch';
-        //grunt.task.run('test');
+    grunt.registerTask('publish-test',function(){
         grunt.task.run('build');
+        grunt.task.run('s3:test');
     });
-    
-    grunt.registerTask('publish',function(type){
-        type = type ? type : 'patch';
-    //    grunt.task.run('test');
+
+    grunt.registerTask('publish-prod',function(){
         grunt.task.run('build');
-        grunt.task.run('s3');
+        grunt.task.run('s3:demo');
     });
 
     grunt.registerTask('default', ['build']);
-
-    grunt.registerTask('mvbuild', 'Move the build to a release folder.', function(){
-        if (grunt.config.get('moved')){
-            grunt.log.writeln('Already moved!');
-            return;
-        }
-        var settings = grunt.config.get('settings'),
-            installPath = settings.installPath();
-        grunt.log.writeln('Moving the module to ' + installPath);
-        grunt.task.run('copy:release');
-        grunt.config.set('moved',true);
-    });
-
-    grunt.registerMultiTask('link', 'Link release apps.', function(){
-        var opts = grunt.config.get('link.options'),
-            data = this.data;
-
-        if (!opts) {
-            opts = {};
-        }
-
-        if (!data.options){
-            data.options = {};
-        }
-
-        if (!opts.mode){
-            opts.mode = '0755';
-        }
-
-        if (opts){
-            Object.keys(opts).forEach(function(opt){
-                if (data.options[opt] === undefined){
-                    data.options[opt] = opts[opt];
-                }
-            });
-        }
-
-        if (data.options.overwrite === true){
-            if (fs.existsSync(data.link)){
-                grunt.log.writelns('Removing old link: ' + data.link);
-                fs.unlinkSync(data.link);
-            }
-        }
-
-        if (data.options.force){
-            var linkDir = path.dirname(data.link);
-            if (!fs.existsSync(linkDir)){
-                grunt.log.writelns('Creating linkDir: ' + linkDir);
-                grunt.file.mkdir(linkDir, '0755');
-            }
-        }
-
-        grunt.log.writelns('Create link: ' + data.link + ' ==> ' + data.target);
-        fs.symlinkSync(data.target, data.link);
-
-        grunt.log.writelns('Make link executable.');
-        fs.chmodSync(data.link,data.options.mode);
-
-        grunt.log.writelns(data.link + ' is ready.');
-    });
-
-    grunt.registerTask('installCheck', 'Install check', function(){
-        var settings = grunt.config.get('settings'),
-            installPath = settings.installPath();
-
-        if (fs.existsSync(installPath)){
-            grunt.log.errorlns('Install dir (' + installPath +
-                                ') already exists.');
-            return false;
-        }
-    });
-
-    grunt.registerTask('install', [
-        'gitLastCommit',
-        'installCheck',
-        'release',
-        'mvbuild',
-        'link',
-        'installCleanup'
-    ]);
-
-    grunt.registerTask('installCleanup', [
-        'gitLastCommit',
-        'rmbuild'
-    ]);
-
-    grunt.registerTask('rmbuild','Remove old copies of the install',function(){
-        this.requires(['gitLastCommit']);
-        var settings       = grunt.config.get('settings'),
-            installBase = settings.name(),
-            installPath = settings.installPath(),
-            installRoot = path.dirname(installPath),
-            pattPart = new RegExp(installBase),
-            pattFull = new RegExp(installBase +  '.(\\d{8})T(\\d{9})Z'),
-            history     = grunt.config.get('rmbuild.history'),
-            contents = [];
-
-        if (history === undefined){
-            history = 4;
-        }
-        grunt.log.writelns('Max history: ' + history);
-
-        fs.readdirSync(installRoot).forEach(function(dir){
-            if (pattPart.test(dir)){
-                contents.push(dir);
-            }
-        });
-
-        if (contents){
-            var sorted = contents.sort(function(A,B){
-                var mA = pattPart.exec(A),
-                    mB = pattPart.exec(B),
-                    i;
-                // The version is the same
-                mA = pattFull.exec(A);
-                mB = pattFull.exec(B);
-                if (mA === null) { return 1; }
-                if (mB === null) { return -1; }
-                for (i = 1; i <= 2; i++){
-                    if (mA[i] !== mB[i]){
-                        return mA[i] - mB[i];
-                    }
-                }
-                return 1;
-            });
-            while (sorted.length > history){
-                var dir = sorted.shift();
-                grunt.log.writelns('remove: ' + dir);
-                fs.removeSync(path.join(installRoot,dir));
-            }
-        }
-    });
 
     grunt.registerTask('gitLastCommit','Get a version number using git commit', function(){
         var settings = grunt.config.get('settings'),
@@ -534,28 +398,6 @@ module.exports = function (grunt) {
         });
     });
 
-    grunt.registerTask('gitstatus','Make surethere are no pending commits', function(){
-        var done = this.async();
-        grunt.util.spawn({
-            cmd     : 'git',
-            args    : ['status','--porcelain']
-        },function(err,result){
-            if (err) {
-                grunt.log.errorlns('Failed to get git status: ' + err);
-                done(false);
-            }
-            if (result.stdout === '""'){
-                grunt.log.writelns('No pending commits.');
-                done(true);
-            }
-            grunt.log.errorlns('Please commit pending changes');
-            grunt.log.errorlns(result.stdout.replace(/\"/g,''));
-            done(false);
-        });
-    });
-
-
-
     grunt.registerMultiTask('smadd','Add submodules',function(){
         var target  = this.target,
             data    = this.data,
@@ -590,40 +432,6 @@ module.exports = function (grunt) {
         });
     });
 
-
-    grunt.registerMultiTask('smadd','Add submodules',function(){
-        var target  = this.target,
-            data    = this.data,
-            opts    = this.options({
-                rootDir : 'vendor',
-                alias   : this.target
-            }),
-            done    = this.async();
-        if (!opts.subDir){
-            opts.subDir = path.join(opts.rootDir,opts.alias);
-        }
-
-        grunt.log.writelns('Add submodule for: ' + target);
-        grunt.util.spawn({
-            cmd : 'git',
-            args : ['submodule','add',data.git,opts.subDir]
-        },function(error/*,result,code*/){
-            if (error) {
-                grunt.log.errorlns('submodule add failed: ' + error);
-                done(false);
-                return;
-            }
-
-            grunt.util.spawn({ cmd : 'git', args : ['init'] },function(err/*,result,code*/){
-                if (err) {
-                    grunt.log.errorlns('submodule init failed: ' + err);
-                    done(false);
-                } else {
-                    done(true);
-                }
-            });
-        });
-    });
 
     grunt.registerMultiTask('smbuild','Build submodules',function(){
         var opts = this.options({
@@ -659,9 +467,10 @@ module.exports = function (grunt) {
                     next();
                 },
               copy= function(next){
-                    var files = grunt.file.expand({ cwd : opts.build},'*.js'),
+                    var files = grunt.file.expand({ cwd : opts.build},'**/*.*'),
                         cont = true,targetFile,abspath;
                     files.forEach(function(file){
+                        //grunt.log.writelns('FILE: ' + file);
                         if (cont){
                             abspath     = path.join(opts.build,file);
                             targetFile  = path.join(opts.target,file);

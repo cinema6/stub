@@ -22,14 +22,23 @@ var __C6_BUILD_VERSION__ = undefined,
             done();
         };
     if (__C6_BUILD_VERSION__) {
-        appScripts = [ 'scripts/c6app.min' ];
+        appScripts = [ 
+            'scripts/c6app.min' 
+        ];
     } else {
-        appScripts = [  'scripts/app',
-                        'scripts/services/services',
-                        'scripts/controllers/controllers',
-                        'scripts/animations/animations',
-                        'scripts/directives/directives'
-                        ];
+        appScripts = [  
+            'lib/c6ui/browser/browser',
+            'lib/c6ui/mouseactivity/mouseactivity',
+            'lib/c6ui/computed/computed',
+            'lib/c6ui/controls/controls',
+            'lib/c6ui/anicache/anicache',
+            'lib/c6ui/sfx/sfx',
+            'scripts/app',
+            'scripts/services/services',
+            'scripts/controllers/controllers',
+            'scripts/animations/animations',
+            'scripts/directives/directives'
+        ];
     }
 
     require([   'lib/jquery/jquery.min',
