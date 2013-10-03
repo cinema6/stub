@@ -7,9 +7,6 @@
 [submodule "vendor/gsap"]
 	path = vendor/gsap
 	url = git@github.com:cinema6/GreenSock-JS.git
-[submodule "vendor/c6media"]
-	path = vendor/c6media
-	url = git@github.com:cinema6/c6Media.git
 [submodule "vendor/ui-router"]
 	path = vendor/ui-router
 	url = git@github.com:cinema6/ui-router.git
