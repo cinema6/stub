@@ -32,6 +32,7 @@ var __C6_BUILD_VERSION__ = undefined,
             'lib/c6ui/computed/computed',
             'lib/c6ui/controls/controls',
             'lib/c6ui/anicache/anicache',
+            'lib/c6ui/videos/video',
             'lib/c6ui/sfx/sfx',
             'scripts/app',
             'scripts/services/services',
@@ -47,11 +48,9 @@ var __C6_BUILD_VERSION__ = undefined,
 
         require(['lib/angular/angular.min'],function(){
             require(['lib/ui-router/angular-ui-router.min'],function(){
-                require(['lib/c6media/c6lib.video.min'],function(){
-                    require(['lib/c6ui/c6ui'],function(){
-                        loadScriptsInOrder(appScripts,function(){
-                            angular.bootstrap(document, ['c6.stubApp']);
-                        });
+                require(['lib/c6ui/c6ui'],function(){
+                    loadScriptsInOrder(appScripts,function(){
+                        angular.bootstrap(document, ['c6.stubApp']);
                     });
                 });
             });
