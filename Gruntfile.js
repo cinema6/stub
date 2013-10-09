@@ -136,16 +136,16 @@ module.exports = function (grunt) {
                 replacement: '\'<%= settings.version() %>\'',
                 path: '<%= settings.distVersionPath() %>/scripts/main.js'
             },
-            scripts: {
-                pattern: 'assets',
-                replacement: '<%= settings.version() %>',
-                path: '<%= settings.distVersionPath() %>/scripts/',
-                recursive : true,
-            },
             views: {
                 pattern: 'assets',
                 replacement: '<%= settings.version() %>',
                 path: '<%= settings.distVersionPath() %>/views/',
+                recursive : true,
+            },
+            c6barvw: {
+                pattern: 'assets',
+                replacement: '<%= settings.version() %>',
+                path: '<%= settings.distVersionPath() %>/lib/c6ui/bar/c6bar.html',
                 recursive : true,
             }
         },
@@ -177,17 +177,25 @@ module.exports = function (grunt) {
                 files: {
                     '.tmp/scripts/c6app.js' : [
                         '<%= settings.app %>/assets/lib/c6ui/c6ui.js',
+                        '<%= settings.app %>/assets/lib/c6ui/events/journal.js',
+                        '<%= settings.app %>/assets/lib/c6ui/events/emitter.js',
+                        '<%= settings.app %>/assets/lib/c6ui/anicache/anicache.js',
                         '<%= settings.app %>/assets/lib/c6ui/browser/browser.js',
                         '<%= settings.app %>/assets/lib/c6ui/mouseactivity/mouseactivity.js',
                         '<%= settings.app %>/assets/lib/c6ui/computed/computed.js',
                         '<%= settings.app %>/assets/lib/c6ui/controls/controls.js',
+                        '<%= settings.app %>/assets/lib/c6ui/resize/resize.js',
+                        '<%= settings.app %>/assets/lib/c6ui/visible/visible.js',
+                        '<%= settings.app %>/assets/lib/c6ui/panels/panels.js',
+                        '<%= settings.app %>/assets/lib/c6ui/bar/c6bar.js',
                         '<%= settings.app %>/assets/lib/c6ui/anicache/anicache.js',
+                        '<%= settings.app %>/assets/lib/c6ui/videos/video.js',
+                        '<%= settings.app %>/assets/lib/c6ui/videos/playlist.js',
+                        '<%= settings.app %>/assets/lib/c6ui/videos/playlist_history.js',
                         '<%= settings.app %>/assets/lib/c6ui/sfx/sfx.js',
-                        '<%= settings.app %>/assets/scripts/app.js',
-                        '<%= settings.app %>/assets/scripts/services/services.js',
-                        '<%= settings.app %>/assets/scripts/controllers/controllers.js',
-                        '<%= settings.app %>/assets/scripts/directives/directives.js',
-                        '<%= settings.app %>/assets/scripts/animations/animations.js'
+                        '<%= settings.app %>/assets/lib/c6ui/url/urlmaker.js',
+                        '<%= settings.app %>/assets/lib/c6ui/format/format.js',
+                        '<%= settings.app %>/assets/scripts/app.js'
                     ]
                 }
             }

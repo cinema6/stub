@@ -18,8 +18,8 @@
         c6.kLogLevels = (c6.kDebug) ? ['error','warn','log','info'] : [];
         c6.makeUrl    = function(url) { return this.kBaseUrl + '/' + url; };
         c6.kVideoUrls = {
-            'local'  : c6.kBaseUrl + '/media/',
-            'cdn'    : 'http://cdn1.cinema6.com/src/stub/'
+            'local'  : c6.kBaseUrl + '/media',
+            'cdn'    : 'http://cdn1.cinema6.com/src/stub'
         };
         win$.c6 = c6;
     }(window$));
@@ -45,12 +45,20 @@
                 return $delegate;
             }]);
         }])
-        .config(['$stateProvider','$urlRouterProvider','c6Defines',
-                function ($stateProvider,$urlRouterProvider, c6Defines) {
+        .config(['c6UrlMakerProvider','c6Defines',function(c6UrlMakerProvider,c6Defines){
+            c6UrlMakerProvider.location(c6Defines.kBaseUrl,'default');
+            if (c6Defines.kLocal){
+                c6UrlMakerProvider.location(c6Defines.kVideoUrls.local ,'video');
+            } else {
+                c6UrlMakerProvider.location(c6Defines.kVideoUrls.cdn ,'video');
+            }
+        }])
+        .config(['$stateProvider','$urlRouterProvider','c6UrlMakerProvider',
+                function ($stateProvider,$urlRouterProvider, c6UrlMakerProvider) {
             $urlRouterProvider.otherwise('/');
             $stateProvider
                 .state('landing', {
-                    templateUrl: c6Defines.makeUrl('views/landing.html'),
+                    templateUrl: c6UrlMakerProvider.makeUrl('views/landing.html'),
                     url: '/'
                 });
         }])
