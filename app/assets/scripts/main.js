@@ -55,13 +55,13 @@ var __C6_BUILD_VERSION__ = undefined,
                 'lib/hammer.js/hammer.min',
                 'lib/gsap/TimelineMax.min',
                 'lib/gsap/TweenMax.min'], function(){
-        
+
         var Modernizr = window.Modernizr;
 
         // Load more stuff with Modernizr
         Modernizr.load({
             test: Modernizr.touch,
-            nope: [ /*__C6_APP_BASE_URL__ + '/styles/main--hover.css' ,*/
+            nope: [ __C6_APP_BASE_URL__ + '/styles/main--hover.css' ,
                     __C6_APP_BASE_URL__ + '/lib/c6ui/style/css/c6__main--hover.css']
         });
 
