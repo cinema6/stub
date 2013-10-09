@@ -52,6 +52,7 @@ var __C6_BUILD_VERSION__ = undefined,
 
     require([   'lib/modernizr/modernizr.custom.72138',
                 'lib/jquery/jquery.min',
+                'lib/hammer.js/hammer.min',
                 'lib/gsap/TimelineMax.min',
                 'lib/gsap/TweenMax.min'], function(){
         
