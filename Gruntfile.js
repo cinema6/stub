@@ -14,26 +14,29 @@ module.exports = function(grunt) {
             this.openBrowser = process.env.GRUNT_BROWSER;
 
             return this;
-        }.call({}, pkg)),
-        config = require('load-grunt-config')(grunt, {
-            configPath: path.join(__dirname, 'tasks/options'),
-            init: false,
-            config: {
-                env: {
-                    myIP: Helpers.myIP()
-                },
-                settings: c6Settings
-            }
-        });
+        }.call({}, pkg));
+
+    require('load-grunt-config')(grunt, {
+        configPath: path.join(__dirname, 'tasks/options'),
+        config: {
+            env: {
+                myIP: Helpers.myIP()
+            },
+            settings: c6Settings
+        }
+    });
 
     grunt.loadTasks('tasks');
 
-    grunt.registerTask('server', [
+    grunt.registerTask('server', 'start a development server', [
         'connect:development',
         'connect:sandbox',
         'open:server',
         'watch:livereload'
     ]);
 
-    grunt.initConfig(config);
+    grunt.registerTask('test', 'run unit and E2E tests', function() {
+        grunt.task.run('jshint:all');
+        grunt.task.run('karma:unit');
+    });
 };

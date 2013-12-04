@@ -2,11 +2,10 @@
     'use strict';
 
     var tests = Object.keys($window.__karma__.files).filter(function(file){
-        return /\.ut\.js$/.test(file);
+        return /\.(ut|it)\.js$/.test(file);
     });
 
     requirejs({
-
         baseUrl: '/base/app/assets/scripts',
 
         paths : {
