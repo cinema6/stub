@@ -13,6 +13,13 @@ module.exports = function(grunt) {
 
             this.openBrowser = process.env.GRUNT_BROWSER;
 
+            this.saucelabs = (function() {
+                var configPath = path.join(process.env.HOME, settings.saucelabsJSON),
+                    configExists = grunt.file.exists(configPath);
+
+                return configExists ? grunt.file.readJSON(configPath) : {};
+            }());
+
             return this;
         }.call({}, pkg));
 
@@ -35,8 +42,24 @@ module.exports = function(grunt) {
         'watch:livereload'
     ]);
 
-    grunt.registerTask('test', 'run unit and E2E tests', function() {
-        grunt.task.run('jshint:all');
-        grunt.task.run('karma:unit');
-    });
+    grunt.registerTask('test:unit', 'run unit tests', [
+        'jshint:all',
+        'karma:unit'
+    ]);
+
+    grunt.registerTask('test:unit:debug', 'run unit tests whenever files change', [
+        'karma:debug'
+    ]);
+
+    grunt.registerTask('test:e2e', 'run e2e tests', [
+        'connect:development',
+        'connect:sandbox',
+        'sauceconnect:e2e',
+        'protractor:e2e'
+    ]);
+
+    grunt.registerTask('test:e2e:debug', 'run e2e tests whenever files change', [
+        'test:e2e',
+        'watch:e2e'
+    ]);
 };

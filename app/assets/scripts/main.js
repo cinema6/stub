@@ -1,77 +1,118 @@
-/*jshint -W080 */
-var __C6_BUILD_VERSION__ = undefined,
-    __C6_APP_BASE_URL__  = (__C6_BUILD_VERSION__ ? __C6_BUILD_VERSION__ : 'assets');
 (function(){
+    /*jshint -W080 */
     'use strict';
+
+    var __C6_BUILD_VERSION__ = window.__C6_BUILD_VERSION__ = undefined,
+        __C6_APP_BASE_URL__ = window.__C6_APP_BASE_URL__ = __C6_BUILD_VERSION__ || 'assets',
+        c6 = window.c6;
 
     require.config({
         baseUrl:  __C6_APP_BASE_URL__
     });
 
-    var appScripts,
-        loadScriptsInOrder = function(scriptsList,done){
-            if (scriptsList){
-                var script = scriptsList.shift();
-                if (script){
-                    require([script],function(){
-                        loadScriptsInOrder(scriptsList,done);
-                    });
-                    return;
+    var libUrl = function(url) {
+            var libBase = (function() {
+                switch (c6.kEnv) {
+                case 'dev':
+                case 'staging':
+                    return c6.kLibUrls.dev;
+                case 'release':
+                    return c6.kLibUrls.release;
                 }
+            }());
+
+            libUrl = function(url) {
+                return libBase + url;
+            };
+
+            return libUrl(url);
+        },
+        appScripts = (function() {
+            if (__C6_BUILD_VERSION__) {
+                return [
+                    'scripts/c6app.min'
+                ];
+            } else {
+                return [
+                    'scripts/app'
+                ];
             }
-            done();
-        };
-    if (__C6_BUILD_VERSION__) {
-        appScripts = [
-            'scripts/c6app.min'
-        ];
-    } else {
-        appScripts = [
-            'lib/c6ui/c6ui',
-            'lib/c6ui/events/journal',
-            'lib/c6ui/events/emitter',
-            'lib/c6ui/anicache/anicache',
-            'lib/c6ui/browser/browser',
-            'lib/c6ui/mouseactivity/mouseactivity',
-            'lib/c6ui/computed/computed',
-            'lib/c6ui/controls/controls',
-            'lib/c6ui/resize/resize',
-            'lib/c6ui/visible/visible',
-            'lib/c6ui/panels/panels',
-            'lib/c6ui/bar/c6bar',
-            'lib/c6ui/anicache/anicache',
-            'lib/c6ui/videos/video',
-            'lib/c6ui/videos/playlist',
-            'lib/c6ui/videos/playlist_history',
-            'lib/c6ui/format/format',
-            'lib/c6ui/url/urlmaker',
-            'lib/c6ui/sfx/sfx',
-            'scripts/app'
-        ];
+        }()),
+        libScripts = (function() {
+            if (__C6_BUILD_VERSION__) {
+                return [
+                    libUrl('modernizr/modernizr.custom.71747.js'),
+                    libUrl('jquery/2.0.3-0-gf576d00/jquery.min.js'),
+                    libUrl('gsap/1.11.2-0-g79f8c87/TweenMax.min.js'),
+                    libUrl('gsap/1.11.2-0-g79f8c87/TimelineMax.min.js'),
+                    libUrl('angular/v1.1.5-0-g9a7035e/angular.min.js'),
+                    libUrl('ui-router/0.2.0-0-g818b0d6/angular-ui-router.min.js'),
+                    libUrl('c6ui/v1.2.9-0-g6e55613/c6uilib.min.js'),
+                    libUrl('c6ui/v1.2.9-0-g6e55613/c6log.min.js')
+                ];
+            } else {
+                return [
+                    libUrl('modernizr/modernizr.custom.71747.js'),
+                    libUrl('jquery/2.0.3-0-gf576d00/jquery.js'),
+                    libUrl('gsap/1.11.2-0-g79f8c87/TweenMax.min.js'),
+                    libUrl('gsap/1.11.2-0-g79f8c87/TimelineMax.min.js'),
+                    libUrl('angular/v1.1.5-0-g9a7035e/angular.js'),
+                    libUrl('ui-router/0.2.0-0-g818b0d6/angular-ui-router.js'),
+                    libUrl('c6ui/v1.2.9-0-g6e55613/c6uilib.js'),
+                    libUrl('c6ui/v1.2.9-0-g6e55613/c6log.js')
+                ];
+            }
+        }());
+
+    function loadScriptsInOrder(scriptsList, done) {
+        var script;
+
+        if (scriptsList) {
+            script = scriptsList.shift();
+
+            if (script) {
+                require([script], function() {
+                    loadScriptsInOrder(scriptsList, done);
+                });
+                return;
+            }
+        }
+        done();
     }
 
-    require([   'lib/modernizr/modernizr.custom.72138',
-                'lib/jquery/jquery.min',
-                'lib/hammer.js/hammer.min',
-                'lib/gsap/TimelineMax.min',
-                'lib/gsap/TweenMax.min'], function(){
+    c6.kBaseUrl = __C6_APP_BASE_URL__;
+    c6.kLocal = (c6.kBaseUrl === 'assets');
+    c6.kDebug = (c6.kEnv === 'dev' || c6.kEnv === 'staging');
+    c6.kHasKarma = false;
+    c6.kLogLevels = (c6.kDebug) ? ['error','warn','log','info'] : [];
+    c6.kVideoUrls = {
+        local: c6.kBaseUrl + '/media',
+        dev: 'http://s3.amazonaws.com/c6.dev/media/src/stub',
+        cdn: 'http://cdn1.cinema6.com/src/stub'
+    };
+    c6.kModDeps = ['ui.router', 'c6.ui'];
 
+    loadScriptsInOrder(libScripts, function() {
         var Modernizr = window.Modernizr;
 
-        // Load more stuff with Modernizr
         Modernizr.load({
             test: Modernizr.touch,
-            nope: [ __C6_APP_BASE_URL__ + '/styles/main--hover.css' ,
-                    __C6_APP_BASE_URL__ + '/lib/c6ui/style/css/c6__main--hover.css']
-        });
+            yep: [
+                __C6_BUILD_VERSION__ ?
+                    libUrl('angular/v1.1.5-0-g9a7035e/angular-mobile.min.js') :
+                    libUrl('angular/v1.1.5-0-g9a7035e/angular-mobile.js')
+            ],
+            nope: [
+                libUrl('c6ui/v1.2.9-0-g6e55613/css/c6uilib--hover.min.css'),
+                __C6_APP_BASE_URL__ + '/styles/main--hover.css'
+            ],
+            complete: function() {
+                if (Modernizr.touch) { c6.kModDeps.push('ngMobile'); }
 
-        require(['lib/angular/angular.min'],function(){
-            require(['lib/ui-router/angular-ui-router.min'],function(){
-                loadScriptsInOrder(appScripts,function(){
-                    angular.bootstrap(document, ['c6.stubApp']);
+                loadScriptsInOrder(appScripts, function() {
+                    angular.bootstrap(document.documentElement, ['c6.stub']);
                 });
-            });
+            }
         });
     });
-
 }());

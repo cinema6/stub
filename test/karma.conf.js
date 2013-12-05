@@ -1,3 +1,5 @@
+var grunt = require('grunt');
+
 module.exports = function(config) {
     // Karma configuration
     'use strict';
@@ -10,17 +12,17 @@ module.exports = function(config) {
 
         // list of files / patterns to load in the browser
         files: [
-            {pattern: 'app/assets/lib/**/*.js',       included: false},
-            {pattern: 'app/assets/scripts/**/*.js',   included: false},
-            {pattern: 'app/assets/views/*.html',      included: false},
-            {pattern: 'test/spec/*.js',               included: false},
+            { pattern: 'package.json', included: false },
+            { pattern: grunt.template.process('<%= settings.appDir %>/assets/scripts/**/*.js'), included: false },
+            { pattern: grunt.template.process('<%= settings.appDir %>/assets/views/*.html'), included: false },
+            { pattern: 'test/spec/*.js', included: false },
             'test/globals_ut.js',
             'test/test-main.js'
         ],
 
         // list of files to exclude
         exclude: [
-            'app/assets/scripts/main.js'
+            '<%= settings.appDir %>/assets/scripts/main.js'
         ],
 
         // test results reporter to use
@@ -41,7 +43,7 @@ module.exports = function(config) {
         logLevel: config.LOG_INFO,
 
         // enable / disable watching file and executing tests whenever any file changes
-        autoWatch: true,
+        autoWatch: false,
 
         // Start these browsers, currently available:
         // - Chrome
