@@ -29,6 +29,8 @@
         "module": true,
         "protractor": true,
         "browser": true,
-        "$": true
+        "$": true,
+        "by": true,
+        "require": true
     }
 }

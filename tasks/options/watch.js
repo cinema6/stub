@@ -14,7 +14,7 @@
                 livereload: true
             }
         },
-        e2e: {
+        'e2e': {
             files: [
                 '<%= settings.appDir %>/*.html',
                 '<%= settings.appDir %>/assets/views/**/*.html',
@@ -24,7 +24,7 @@
                 'test/e2e/**/*.e2e.js'
             ],
             tasks: [
-                'protractor:e2e'
+                'protractor:<%= grunt.task.current.args[1] %>'
             ]
         }
     };

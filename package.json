@@ -2,6 +2,7 @@
   "name": "stub",
   "version": "1.0.0",
   "description": "Cinema6 Angular Stub.",
+  "keywords": ["stub"],
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.1",
