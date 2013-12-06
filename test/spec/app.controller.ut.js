@@ -19,7 +19,7 @@
                 });
             });
 
-            it('should exist',function(){
+            it('should exist',function() {
                 expect(AppCtrl).toBeDefined();
             });
 

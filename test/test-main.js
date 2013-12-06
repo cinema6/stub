@@ -22,6 +22,7 @@
         local: 'assets/media',
         cdn: 'http://foo.cinema6.com/media/app'
     };
+    c6.kModDeps = ['ui.router', 'c6.ui', 'c6.log'];
 
     packageRequest.onload = function(event) {
         var packageJSON = JSON.parse(event.target.response),
@@ -72,7 +73,7 @@
                     deps: ['c6ui']
                 },
                 app: {
-                    deps: ['angular', 'angularMocks', 'modernizr', 'timelinemax', 'uirouter', 'c6ui']
+                    deps: ['angular', 'angularMocks', 'modernizr', 'timelinemax', 'uirouter', 'c6ui', 'c6log']
                 }
             },
 

@@ -16,7 +16,6 @@ module.exports = function(config) {
             { pattern: grunt.template.process('<%= settings.appDir %>/assets/scripts/**/*.js'), included: false },
             { pattern: grunt.template.process('<%= settings.appDir %>/assets/views/*.html'), included: false },
             { pattern: 'test/spec/*.js', included: false },
-            'test/globals_ut.js',
             'test/test-main.js'
         ],
 
