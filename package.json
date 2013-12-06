@@ -2,7 +2,9 @@
   "name": "stub",
   "version": "1.0.0",
   "description": "Cinema6 Angular Stub.",
-  "keywords": ["stub"],
+  "keywords": [
+    "stub"
+  ],
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -26,7 +28,16 @@
     "karma": "~0.10.8",
     "grunt-karma": "~0.6.2",
     "protractor": "~0.14.0",
-    "grunt-protractor-runner": "~0.1.11"
+    "grunt-protractor-runner": "~0.1.11",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-htmlmin": "~0.1.3",
+    "grunt-contrib-cssmin": "~0.7.0",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-uglify": "~0.2.7",
+    "grunt-sed": "~0.1.1",
+    "grunt-angular-templates": "~0.5.0",
+    "grunt-c6-util": "git+ssh://git@github.com:cinema6/c6-grunt-util"
   },
   "engines": {
     "node": ">=0.8.0"
@@ -39,6 +50,7 @@
   },
   "c6Settings": {
     "appUrl": "http://<%= env.myIP %>:<%= settings.appPort %>/",
+    "appModule": "c6.<%= package.name %>",
     "appDir": "app",
     "distDir": "dist",
     "awsJSON": ".aws.json",
@@ -51,11 +63,13 @@
     "s3": {
       "test": {
         "bucket": "c6.dev",
-        "collateral": "media/src/site/collateral/"
+        "collateral": "media/src/site/collateral/",
+        "app": "content/stub/"
       },
       "production": {
         "bucket": "cinema6.com-etc",
-        "collateral": "collateral/"
+        "collateral": "collateral/",
+        "app": "experiences/stub/"
       }
     }
   }
