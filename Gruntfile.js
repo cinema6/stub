@@ -27,6 +27,10 @@ module.exports = function(grunt) {
             return this;
         }.call({}, settings));
 
+    if (!grunt.file.exists('.c6stubinit')) {
+        grunt.fail.warn('This project has not been initialized. Please run "grunt init".');
+    }
+
     require('load-grunt-config')(grunt, {
         configPath: path.join(__dirname, 'tasks/options'),
         config: {
