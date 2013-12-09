@@ -46,6 +46,28 @@ Steps for starting a new project using stub
     ```
 
 ### Grunt Tasks and Configuration
+#### Configuration
+##### package.json
+The name and keywords in this file are used to configure certain application settings and defaults. For example, when executing E2E tests on SauceLabs, the name of the job will be the "name" property in this file, and the job tags will be the "keywords" array in this file.
+
+##### settings.json
+This file contains the application settings that are used accross grunt tasks and in automated testing. You can run
+```bash
+grunt init
+```
+to run a wizard that will walk you through configuring this file.
+
+###### appUrl
+This property configures the url that the sandbox should iframe in to load your application.
+
+###### appModule
+The main Angular module name for your application.
+
+###### appDir
+The folder that houses your application
+
+###### distDir
+The folder that grunt should build
 #### Tasks
 ##### init
 This task guides you through configuring your new application. You should only need to run this once when setting up your app for the first time.
