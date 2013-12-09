@@ -25,7 +25,7 @@
     c6.kModDeps = ['ui.router', 'c6.ui', 'c6.log'];
 
     packageRequest.onload = function(event) {
-        var settings = JSON.parse(event.target.response),
+        var settings = window.c6Settings = JSON.parse(event.target.response),
             appDir = settings.appDir;
 
         function libUrl(url) {

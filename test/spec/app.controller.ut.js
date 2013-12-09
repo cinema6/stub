@@ -8,7 +8,7 @@
                 AppCtrl;
 
             beforeEach(function() {
-                module('c6.stub');
+                module(window.c6Settings.appModule);
                 inject(function(_$rootScope_, $controller) {
                     $rootScope = _$rootScope_;
                     $scope = _$rootScope_.$new();
