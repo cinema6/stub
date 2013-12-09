@@ -12,7 +12,7 @@ module.exports = function(config) {
 
         // list of files / patterns to load in the browser
         files: [
-            { pattern: 'package.json', included: false },
+            { pattern: 'settings.json', included: false },
             { pattern: grunt.template.process('<%= settings.appDir %>/assets/scripts/**/*.js'), included: false },
             { pattern: grunt.template.process('<%= settings.appDir %>/assets/views/*.html'), included: false },
             { pattern: 'test/spec/*.js', included: false },

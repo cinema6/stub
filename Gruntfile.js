@@ -4,10 +4,8 @@ module.exports = function(grunt) {
     var path = require('path');
 
     var _ = grunt.util._,
-        pkg = grunt.file.readJSON('package.json'),
-        c6Settings = (function(pkg) {
-            var settings = pkg.c6Settings;
-
+        settings = grunt.file.readJSON('settings.json'),
+        c6Settings = (function(settings) {
             _.extend(this, settings);
 
             this.openBrowser = process.env.GRUNT_BROWSER;
@@ -27,7 +25,7 @@ module.exports = function(grunt) {
             }());
 
             return this;
-        }.call({}, pkg));
+        }.call({}, settings));
 
     require('load-grunt-config')(grunt, {
         configPath: path.join(__dirname, 'tasks/options'),
@@ -68,7 +66,6 @@ module.exports = function(grunt) {
     grunt.registerTask('test:e2e', 'run e2e tests on specified browser', function(browser) {
         var protractorTask = 'protractor' + ((browser === 'all') ? '' : (':' + browser));
 
-        grunt.task.run('connect:development');
         grunt.task.run('connect:sandbox');
         grunt.task.run('sauceconnect:e2e');
         grunt.task.run(protractorTask);

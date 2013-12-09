@@ -8,7 +8,7 @@
         packageRequest = new XMLHttpRequest(),
         c6 = $window.c6 = {};
 
-    packageRequest.open('GET', '/base/package.json');
+    packageRequest.open('GET', '/base/settings.json');
     packageRequest.send();
 
     $window.ga = function() {};
@@ -25,8 +25,7 @@
     c6.kModDeps = ['ui.router', 'c6.ui', 'c6.log'];
 
     packageRequest.onload = function(event) {
-        var packageJSON = JSON.parse(event.target.response),
-            settings = packageJSON.c6Settings,
+        var settings = JSON.parse(event.target.response),
             appDir = settings.appDir;
 
         function libUrl(url) {

@@ -47,30 +47,5 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/cinema6/stub.git"
-  },
-  "c6Settings": {
-    "appUrl": "/__dirname/<%= settings.appDir %>/",
-    "appModule": "c6.<%= package.name %>",
-    "appDir": "app",
-    "distDir": "dist",
-    "awsJSON": ".aws.json",
-    "saucelabsJSON": ".saucelabs.json",
-    "appPort": 8000,
-    "sandboxPort": 9000,
-    "collateralDir": "siteContent",
-    "experiencesJSON": "<%= settings.appDir %>/assets/mock/experiences.json",
-    "libUrl": "http://s3.amazonaws.com/c6.dev/ext/",
-    "s3": {
-      "test": {
-        "bucket": "c6.dev",
-        "collateral": "media/src/site/collateral/",
-        "app": "content/stub/"
-      },
-      "production": {
-        "bucket": "cinema6.com-etc",
-        "collateral": "collateral/",
-        "app": "experiences/stub/"
-      }
-    }
   }
 }
