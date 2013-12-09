@@ -8,7 +8,8 @@ module.exports = function(grunt) {
     grunt.registerTask('createexp', 'Create a Cinema6 experience', function() {
         var settings = grunt.config.get('settings'),
             pkg = grunt.config.get('package'),
-            experiences = grunt.file.readJSON(settings.experiencesJSON),
+            experiences = grunt.file.exists(settings.experiencesJSON) ?
+                grunt.file.readJSON(settings.experiencesJSON) : [],
             experience = {
                 id: helpers.genId('e'),
                 uri: null,
