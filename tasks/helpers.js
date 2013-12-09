@@ -1,7 +1,8 @@
 (function() {
     'use strict';
 
-    var grunt = require('grunt');
+    var grunt = require('grunt'),
+        crypto = require('crypto');
 
     module.exports = {
         myIP: function() {
@@ -39,6 +40,18 @@
 
         mountFolder: function(connect, dir) {
             return connect.static(require('path').resolve(dir));
+        },
+
+        genId: function(prefix) {
+            var hash = crypto.createHash('sha1');
+            var txt =   process.env.host                    +
+                        process.pid.toString()              +
+                        process.uptime().toString()         +
+                        (new Date()).valueOf().toString()   +
+                        (Math.random() * 999999999).toString();
+
+            hash.update(txt);
+            return (prefix + '-' + hash.digest('hex').substr(0,14));
         }
     };
 })();

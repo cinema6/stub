@@ -42,10 +42,12 @@ module.exports = function(grunt) {
 
             // Write new package.json
             grunt.file.write('package.json', JSON.stringify(pkg, null, '  '));
+            grunt.config.set('package', pkg);
             grunt.log.ok('Wrote package.json');
 
             // Write new settings.json
             grunt.file.write('settings.json', JSON.stringify(settings, null, '    '));
+            grunt.config.set('settings', settings);
             grunt.log.ok('Wrote settings.json');
 
             // Insert module name into scripts
