@@ -49,7 +49,7 @@
     "url": "git://github.com/cinema6/stub.git"
   },
   "c6Settings": {
-    "appUrl": "http://<%= env.myIP %>:<%= settings.appPort %>/",
+    "appUrl": "/__dirname/<%= settings.appDir %>/",
     "appModule": "c6.<%= package.name %>",
     "appDir": "app",
     "distDir": "dist",

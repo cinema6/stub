@@ -4,7 +4,6 @@ module.exports = function(grunt) {
     var path = require('path');
 
     var _ = grunt.util._,
-        Helpers = require('./tasks/helpers'),
         pkg = grunt.file.readJSON('package.json'),
         c6Settings = (function(pkg) {
             var settings = pkg.c6Settings;
@@ -33,9 +32,6 @@ module.exports = function(grunt) {
     require('load-grunt-config')(grunt, {
         configPath: path.join(__dirname, 'tasks/options'),
         config: {
-            env: {
-                myIP: Helpers.myIP()
-            },
             settings: c6Settings
         }
     });
@@ -49,7 +45,6 @@ module.exports = function(grunt) {
      *********************************************************************************************/
 
     grunt.registerTask('server', 'start a development server', [
-        'connect:development',
         'connect:sandbox',
         'open:server',
         'watch:livereload'
