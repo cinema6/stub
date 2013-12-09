@@ -27,7 +27,7 @@ module.exports = function(grunt) {
             return this;
         }.call({}, settings));
 
-    if (!grunt.file.exists('.c6stubinit')) {
+    if (!grunt.file.exists('.c6stubinit') && grunt.cli.tasks[0] !== 'init') {
         grunt.fail.warn('This project has not been initialized. Please run "grunt init".');
     }
 
