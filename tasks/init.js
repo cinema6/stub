@@ -38,7 +38,10 @@ module.exports = function(grunt) {
         }
 
         function makeModifications() {
-            var scripts = grunt.file.expand(settings.appDir + '/assets/scripts/**/*.js');
+            var scripts = grunt.file.expand([
+                settings.appDir + '/assets/scripts/**/*.js',
+                'test/spec/**/*.{ut,it}.js'
+            ]);
 
             // Write new package.json
             grunt.file.write('package.json', JSON.stringify(pkg, null, '  '));
