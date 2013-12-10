@@ -47,7 +47,20 @@ Steps for starting a new project using stub
 
 ### Grunt Tasks and Configuration
 #### Configuration
-##### package.json
+##### .aws.json
+This file should be stored in a location where it can be accessed by many applications (usually your home directory.) It should have the following properties:
+
+1. accessKeyId
+2. secretAccessKey
+3. region
+
+##### .saucelabs.json
+This file should be stored in a location where it can be accessed by many applications (usually your home directory.) It should have the following properties:
+
+1. user
+2. key
+
+#### package.json
 The name and keywords in this file are used to configure certain application settings and defaults. For example, when executing E2E tests on SauceLabs, the name of the job will be the "name" property in this file, and the job tags will be the "keywords" array in this file.
 
 ##### settings.json
@@ -64,10 +77,47 @@ This property configures the url that the sandbox should iframe in to load your 
 The main Angular module name for your application.
 
 ###### appDir
-The folder that houses your application
+The folder that houses your application.
 
 ###### distDir
-The folder that grunt should build
+The folder into which grunt should build the application.
+
+###### awsJSON
+The path (relative to your home directory) of your .aws.json file.
+
+###### saucelabsJSON
+The path (relative to your home directory) of your .saucelabs.json file.
+
+###### sandboxPort
+The port on which to run the development server.
+
+###### collateralDir
+The directory where collateral assets will be stored. This folder will be created for you the first time an experience is created.
+
+###### experiencesJSON
+The location of experiences.json file that the sandbox will use to drive your application. This file will be created for you the first time you create an experience.
+
+###### libUrl
+The URL prefix used to resolve 3rd-party libraries in unit tests.
+
+###### s3.test.bucket
+The S3 bucket used for testing.
+
+###### s3.test.collateral
+The collateral asset upload location for testing.
+
+###### s3.test.app
+The app upload location for testing.
+
+###### s3.production.bucket
+The S3 bucket used for production.
+
+###### s3.production.collateral
+The collateral asset upload location for production.
+
+###### s3.production.app
+The app upload location for production.
+
 #### Tasks
 ##### init
 This task guides you through configuring your new application. You should only need to run this once when setting up your app for the first time.
