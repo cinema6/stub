@@ -66,7 +66,7 @@ The name and keywords in this file are used to configure certain application set
 ##### settings.json
 This file contains the application settings that are used accross grunt tasks and in automated testing. You can run
 ```bash
-grunt init
+$> grunt init
 ```
 to run a wizard that will walk you through configuring this file.
 
