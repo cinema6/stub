@@ -5,7 +5,6 @@
     "distDir": "dist",
     "awsJSON": ".aws.json",
     "saucelabsJSON": ".saucelabs.json",
-    "appPort": 8000,
     "sandboxPort": 9000,
     "collateralDir": "siteContent",
     "experiencesJSON": "<%= settings.appDir %>/assets/mock/experiences.json",
