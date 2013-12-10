@@ -31,6 +31,7 @@
         "browser": true,
         "$": true,
         "by": true,
-        "require": true
+        "require": true,
+        "spyOn": true
     }
 }

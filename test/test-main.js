@@ -49,7 +49,8 @@
                 timelinemax: libUrl('gsap/1.11.2-0-g79f8c87/TimelineMax.min'),
                 uirouter: libUrl('ui-router/0.2.0-0-g818b0d6/angular-ui-router'),
                 c6ui: libUrl('c6ui/v1.2.9-0-g6e55613/c6uilib'),
-                c6log: libUrl('c6ui/v1.2.9-0-g6e55613/c6log')
+                c6log: libUrl('c6ui/v1.2.9-0-g6e55613/c6log'),
+                templates: '/base/.tmp/templates'
             },
 
             shim: {
@@ -70,6 +71,9 @@
                 },
                 c6log: {
                     deps: ['c6ui']
+                },
+                templates: {
+                    deps: ['app']
                 },
                 app: {
                     deps: ['angular', 'angularMocks', 'modernizr', 'timelinemax', 'uirouter', 'c6ui', 'c6log']

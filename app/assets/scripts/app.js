@@ -75,11 +75,69 @@
                 .state('landing', {
                     templateUrl: c6UrlMakerProvider.makeUrl('views/landing.html'),
                     url: '/'
+                })
+                .state('experience', {
+                    templateUrl: c6UrlMakerProvider.makeUrl('views/experience.html'),
+                    url: '/experience'
                 });
         }])
-        .controller('AppController', ['$scope','$state','$log','$location',
-        function                     ( $scope , $state , $log , $location ) {
+        .controller('AppController', ['$scope','$state','$log','$location', 'site', 'c6ImagePreloader', 'gsap',
+        function                     ( $scope , $state , $log , $location ,  site ,  c6ImagePreloader ,  gsap ) {
+            var self = this;
+
             $log.info('AppCtlr loaded.');
+
+            this.src = function(src) {
+                var profile = self.profile,
+                    modifiers = {
+                        slow: '--low',
+                        average: '--med',
+                        fast: '--high'
+                    },
+                    speed, webp, extArray, ext;
+
+                if (!src || !profile) {
+                    return null;
+                }
+
+                speed = profile.speed;
+                webp = profile.webp;
+                extArray = src.split('.');
+                ext = extArray[extArray.length - 1];
+
+                if (webp && speed !== 'slow') {
+                    return src.replace(('.' + ext), (modifiers[speed] + '.webp'));
+                } else {
+                    return src.replace(('.' + ext), (modifiers[speed] + '.' + ext));
+                }
+            };
+
+            this.goto = function() {
+
+            };
+
+            site.init({
+                setup: function(appData) {
+                    self.experience = appData.experience;
+                    self.profile = appData.profile;
+
+                    gsap.TweenLite.ticker.useRAF(self.profile.raf);
+
+                    return c6ImagePreloader.load([self.src(self.experience.img.hero)]);
+                }
+            });
+
+            site.getSession().then(function(session) {
+                session.on('gotoState', function(state) {
+                    if (state === 'start') {
+                        self.goto('landing');
+                    }
+                });
+            });
+
+            $scope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
+                event.preventDefault();
+            });
 
             $scope.$on('$stateChangeSuccess',
                 function(event,toState,toParams,fromState){
