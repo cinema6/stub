@@ -172,7 +172,7 @@ ex:
 $> grunt test:unit:debug
 ```
 
-##### test:e2e:(browser||'all')
+##### test:e2e:(browser || 'all')
 This task will execute the E2E tests on SauceLabs in the specified browser, or in all browsers if "all" is supplied.
 
 ex:
@@ -190,7 +190,7 @@ ex:
 $> grunt test:e2e:debug:iphone
 ```
 
-##### publish:collateral:('test'||'production')
+##### publish:collateral:('test' || 'production')
 This task will build and upload the collateral assets to the specified environment on S3.
 
 ex:
@@ -199,7 +199,7 @@ $> grunt publish:collateral:test #Upload collateral assets to test server
 $> grunt publish:collateral:production #Upload collateral assets to production server
 ```
 
-##### publish:app:('test'||'production')
+##### publish:app:('test' || 'production')
 This task will build and upload the application to the specified environment on S3.
 
 ex:
@@ -208,7 +208,7 @@ $> grunt publish:app:test #Upload app to test server
 $> grunt publish:app:production #Upload app to production server
 ```
 
-##### publish:('test'||'production')
+##### publish:('test' || 'production')
 This task will build and upload the collateral assets and app to the specified environment on S3.
 
 ex:
