@@ -7,7 +7,10 @@
                 chromeDriver: '',
                 sauceUser: '<%= settings.saucelabs.user %>',
                 sauceKey: '<%= settings.saucelabs.key %>',
-                specs: ['test/e2e/common/**/*.e2e.js']
+                specs: [
+                    'test/e2e/setup.js',
+                    'test/e2e/common/**/*.e2e.js'
+                ]
             }
         },
         chrome: {
