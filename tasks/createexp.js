@@ -47,6 +47,30 @@ module.exports = function(grunt) {
                 return settings.collateralDir + '/' + src;
             }
 
+            function copyImgSet(src) {
+                var seed = 'tasks/hero--sample.',
+                    seeds = {
+                        jpg: seed + 'jpg',
+                        webp: seed + 'webp'
+                    },
+                    unprocessedSrc = src.slice(0, src.lastIndexOf('.')),
+                    modifiers = [
+                        '--low.jpg',
+                        '--med.jpg',
+                        '--high.jpg',
+                        '--med.webp',
+                        '--high.webp'
+                    ];
+
+                modifiers.forEach(function(modifier) {
+                    var ext = modifier.slice(modifier.lastIndexOf('.') + 1),
+                        file = unprocessedSrc + modifier;
+
+                    grunt.file.copy(seeds[ext], file);
+                    grunt.log.ok('Created ' + file);
+                });
+            }
+
             grunt.log.writeln('Generated Experience:');
             grunt.log.write(JSON.stringify(experience, null, '    ') + '\n');
 
@@ -63,6 +87,7 @@ module.exports = function(grunt) {
                 grunt.file.write(file);
                 grunt.log.ok('Created ' + file);
             });
+            copyImgSet(collateral(experience.img.hero));
         }
 
         getInput([
