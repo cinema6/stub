@@ -81,9 +81,10 @@
                     url: '/experience'
                 });
         }])
-        .controller('AppController', ['$scope','$state','$log','$location', 'site', 'c6ImagePreloader', 'gsap',
-        function                     ( $scope , $state , $log , $location ,  site ,  c6ImagePreloader ,  gsap ) {
-            var self = this;
+        .controller('AppController', ['$scope','$state','$log','$location', 'site', 'c6ImagePreloader', 'gsap', '$timeout',
+        function                     ( $scope , $state , $log , $location ,  site ,  c6ImagePreloader ,  gsap ,  $timeout ) {
+            var self = this,
+                canChangeState = false;
 
             $log.info('AppCtlr loaded.');
 
@@ -112,8 +113,8 @@
                 }
             };
 
-            this.goto = function() {
-
+            this.goto = function(state) {
+                $state.go(state);
             };
 
             site.init({
@@ -136,7 +137,21 @@
             });
 
             $scope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
+                if (!fromState.name || canChangeState) {
+                    return;
+                }
+
                 event.preventDefault();
+
+                site.requestTransitionState(true).then(function() {
+                    canChangeState = true;
+
+                    self.goto(toState.name);
+
+                    site.requestTransitionState(false);
+
+                    $timeout(function() { canChangeState = false; });
+                });
             });
 
             $scope.$on('$stateChangeSuccess',

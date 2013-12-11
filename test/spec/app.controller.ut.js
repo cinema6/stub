@@ -6,11 +6,14 @@
             var $rootScope,
                 $scope,
                 $q,
+                $timeout,
                 AppCtrl;
 
             var site,
                 c6ImagePreloader,
                 gsap,
+                $stateProvider,
+                $state,
                 appData,
                 siteSession;
 
@@ -32,6 +35,19 @@
                     }
                 };
 
+                $stateProvider = {
+                    state: jasmine.createSpy('$stateProvider.state()').andCallFake(function() {
+                        return $stateProvider;
+                    }),
+                    $get: function() {
+                        return $state;
+                    }
+                };
+
+                $state = {
+                    go: jasmine.createSpy('$state.go()')
+                };
+
                 appData = {
                     experience: {
                         img: {}
@@ -40,8 +56,11 @@
                         raf: {}
                     }
                 };
+                module('ui.router', function($provide) {
+                    $provide.provider('$state', $stateProvider);
+                });
 
-                module('c6.stub', function($provide) {
+                module('c6.ui', function($provide) {
                     $provide.factory('site', function($q) {
                         site = {
                             init: jasmine.createSpy('site.init()'),
@@ -60,11 +79,16 @@
                         return site;
                     });
                     $provide.value('c6ImagePreloader', c6ImagePreloader);
+                });
+
+                module('c6.stub', function($provide) {
                     $provide.value('gsap', gsap);
                 });
-                inject(function(_$rootScope_, _$q_, $controller, c6EventEmitter) {
+
+                inject(function(_$rootScope_, _$q_, _$timeout_, $controller, c6EventEmitter) {
                     $rootScope = _$rootScope_;
                     $q = _$q_;
+                    $timeout = _$timeout_;
                     $scope = _$rootScope_.$new();
 
                     AppCtrl = $controller('AppController', {
@@ -138,8 +162,12 @@
             });
 
             describe('when $stateChangeStart is fired', function() {
+                var fromState;
+
                 beforeEach(function() {
-                    spyOn(AppCtrl, 'goto');
+                    spyOn(AppCtrl, 'goto').andCallFake(function(state) {
+                        $rootScope.$broadcast('$stateChangeStart', { name: state }, {}, { name: fromState });
+                    });
                 });
 
                 describe('on initial landing page load', function() {
@@ -157,23 +185,69 @@
                 });
 
                 describe('on first transition to experience', function() {
-                    var event;
+                    var event,
+                        unregister;
 
                     beforeEach(function() {
                         event = {
                             preventDefault: jasmine.createSpy('event.preventDefault()')
                         };
 
-                        $scope.$new().$on('$stateChangeStart', function(event) {
+                        unregister = $scope.$new().$on('$stateChangeStart', function(event) {
                             expect(event.defaultPrevented).toBe(true);
                         });
                         $rootScope.$broadcast('$stateChangeStart', { name: 'experience' }, {}, { name: 'landing' });
+                    });
+
+                    it('should requestTransitionState(true) from the site', function() {
+                        expect(site.requestTransitionState).toHaveBeenCalledWith(true);
+                    });
+
+                    describe('after the transition state is entered', function() {
+                        beforeEach(function() {
+                            unregister();
+
+                            unregister = $scope.$new().$on('$stateChangeStart', function(event) {
+                                expect(event.defaultPrevented).toBe(false);
+                            });
+                            fromState = 'landing';
+                            $rootScope.$apply(function() { site._.requestTransitionStateResult.resolve(); });
+                        });
+
+                        it('should transition to the state', function() {
+                            expect(AppCtrl.goto).toHaveBeenCalledWith('experience');
+                        });
+
+                        it('should requestTransitionState(false) from the site', function() {
+                            expect(site.requestTransitionState).toHaveBeenCalledWith(false);
+                        });
+
+                        it('should rerun this whole procedure during the next transisition', function() {
+                            unregister();
+
+                            $timeout.flush();
+
+                            unregister = $scope.$new().$on('$stateChangeStart', function(event) {
+                                expect(event.defaultPrevented).toBe(true);
+                            });
+
+                            fromState = 'experience';
+                            AppCtrl.goto('landing');
+                        });
                     });
                 });
             });
 
             describe('@public', function() {
                 describe('methods', function() {
+                    describe('goto(state)', function() {
+                        it('should proxy to $state.go(state)', function() {
+                            AppCtrl.goto('experience');
+
+                            expect($state.go).toHaveBeenCalledWith('experience');
+                        });
+                    });
+
                     describe('img(src)', function() {
                         it('should append a different modifier based on different profile properties', function() {
                             var src = 'test/foo.jpg';
