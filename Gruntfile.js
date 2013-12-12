@@ -71,17 +71,19 @@ module.exports = function(grunt) {
         'karma:debug'
     ]);
 
-    grunt.registerTask('test:e2e', 'run e2e tests on specified browser', function(browser) {
-        var protractorTask = 'protractor' + ((browser === 'all') ? '' : (':' + browser));
+    grunt.registerTask('test:e2e', 'run e2e tests on specified browser', function(browser, env) {
+        var protractorTask = 'protractor:' + ((browser === 'all') ? '' : browser) + ':' + (env || settings.defaultE2EEnv);
 
         grunt.task.run('connect:sandbox');
-        grunt.task.run('sauceconnect:e2e');
+        if (env !== 'local') {
+            grunt.task.run('sauceconnect:e2e');
+        }
         grunt.task.run(protractorTask);
     });
 
-    grunt.registerTask('test:e2e:debug', 'run e2e tests whenever files change', function(browser) {
-        grunt.task.run('test:e2e:' + browser);
-        grunt.task.run('watch:e2e:' + browser);
+    grunt.registerTask('test:e2e:debug', 'run e2e tests locally whenever files change', function(browser) {
+        grunt.task.run('test:e2e:' + (browser || '') + ':local');
+        grunt.task.run('watch:e2e:' + (browser || ''));
     });
 
     /*********************************************************************************************

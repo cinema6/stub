@@ -3,10 +3,21 @@
 
     module.exports = {
         options: {
-            args: {
-                chromeDriver: '',
-                sauceUser: '<%= settings.saucelabs.user %>',
-                sauceKey: '<%= settings.saucelabs.key %>',
+            envs: {
+                local: {
+                    config: {}
+                },
+                saucelabs: {
+                    config: {
+                        sauceUser: '<%= settings.saucelabs.user %>',
+                        sauceKey: '<%= settings.saucelabs.key %>'
+                    }
+                }
+            },
+            config: {
+                capabilities: {
+                    name: '<%= package.name %>',
+                },
                 specs: [
                     'test/e2e/setup.js',
                     'test/e2e/common/**/*.e2e.js'
@@ -14,22 +25,56 @@
             }
         },
         chrome: {
-            configFile: 'test/e2e/chrome/config.js'
+            config: {
+                specs: ['test/e2e/chrome/**/*.e2e.js'],
+                capabilities: {
+                    browserName: 'chrome'
+                }
+            }
         },
         firefox: {
-            configFile: 'test/e2e/firefox/config.js'
+            config: {
+                specs: ['test/e2e/firefox/**/*.e2e.js'],
+                capabilities: {
+                    browserName: 'firefox'
+                }
+            }
         },
         safari: {
-            configFile: 'test/e2e/safari/config.js'
+            config: {
+                specs: ['test/e2e/safari/**/*.e2e.js'],
+                capabilities: {
+                    browserName: 'safari'
+                }
+            }
         },
         ie: {
-            configFile: 'test/e2e/ie/config.js'
+            config: {
+                specs: ['test/e2e/ie/**/*.e2e.js'],
+                capabilities: {
+                    browserName: 'internet explorer'
+                }
+            }
         },
         ipad: {
-            configFile: 'test/e2e/ipad/config.js'
+            config: {
+                specs: ['test/e2e/ipad/**/*.e2e.js'],
+                capabilities: {
+                    platform: 'OS X 10.8',
+                    browserName: 'ipad',
+                    version: '6.1'
+                }
+            }
         },
         iphone: {
-            configFile: 'test/e2e/iphone/config.js'
+            config: {
+                specs: ['test/e2e/iphone/**/*.e2e.js'],
+                capabilities: {
+                    platform: 'OS X 10.8',
+                    browserName: 'iphone',
+                    version: '6.1'
+                }
+            }
         }
     };
 })();

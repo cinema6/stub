@@ -9,6 +9,7 @@
     "collateralDir": "siteContent",
     "experiencesJSON": "<%= settings.appDir %>/assets/mock/experiences.json",
     "libUrl": "http://s3.amazonaws.com/c6.dev/ext/",
+    "defaultE2EEnv": "saucelabs",
     "s3": {
         "test": {
             "bucket": "c6.dev",

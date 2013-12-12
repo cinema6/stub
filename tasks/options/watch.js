@@ -24,7 +24,7 @@
                 'test/e2e/**/*.e2e.js'
             ],
             tasks: [
-                'protractor:<%= grunt.task.current.args[1] %>'
+                'protractor:<%= grunt.task.current.args[1] %>:local'
             ]
         }
     };
