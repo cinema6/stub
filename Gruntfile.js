@@ -79,7 +79,10 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('test:e2e', 'run e2e tests on specified browser', function(browser, env) {
-        var protractorTask = 'protractor:' + ((browser === 'all') ? '' : browser) + ':' + (env || settings.defaultE2EEnv);
+        var protractorTask;
+
+        env = env || settings.defaultE2EEnv;
+        protractorTask = 'protractor:' + ((browser === 'all') ? '' : browser) + ':' + (env);
 
         grunt.task.run('connect:sandbox');
         if (env === 'saucelabs') {
