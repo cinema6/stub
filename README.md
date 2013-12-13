@@ -88,6 +88,9 @@ The path (relative to your home directory) of your .aws.json file.
 ###### saucelabsJSON
 The path (relative to your home directory) of your .saucelabs.json file.
 
+###### browserstackJSON
+The path (relative to your home directory) of your .browserstack.json file.
+
 ###### sandboxPort
 The port on which to run the development server.
 
@@ -99,6 +102,9 @@ The location of experiences.json file that the sandbox will use to drive your ap
 
 ###### libUrl
 The URL prefix used to resolve 3rd-party libraries in unit tests.
+
+###### defaultE2EEnv
+The default E2E environment in which to run when no environment is passed to the ````grunt:test:e2e```` task. Valid values are "saucelabs", "browserstack" or "local".
 
 ###### s3.test.bucket
 The S3 bucket used for testing.
@@ -172,18 +178,18 @@ ex:
 $> grunt test:unit:debug
 ```
 
-##### test:e2e:(browser || 'all')
-This task will execute the E2E tests on SauceLabs in the specified browser, or in all browsers if "all" is supplied.
+##### test:e2e:(browser || 'all'):(env || *undefined*)
+This task will execute the E2E tests on the environment of your choice (or in the environment specified in settings.json if none is supplied) in the specified browser, or in all browsers if "all" is supplied.
 
 ex:
 ```bash
-$> grunt test:e2e:chrome #Run E2E tests in Chrome
-$> grunt test:e2e:ie #Run E2E tests in IE
-$> grunt test:e2e:all #Run E2E tests in all browsers
+$> grunt test:e2e:chrome #Run E2E tests in Chrome in default env
+$> grunt test:e2e:ie:local #Run E2E tests in IE locally
+$> grunt test:e2e:all:browserstack #Run E2E tests in all browsers on BrowserStack
 ```
 
 ##### test:e2e:debug:(browser)
-This task will watch your app and test files and run the E2E tests in the specified browser when any of the files change.
+This task will watch your app and test files and run the E2E tests locally in the specified browser when any of the files change.
 
 ex:
 ```bash
