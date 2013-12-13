@@ -17,6 +17,13 @@ module.exports = function(grunt) {
                 return configExists ? grunt.file.readJSON(configPath) : {};
             }());
 
+            this.browserstack = (function() {
+                var configPath = path.join(process.env.HOME, settings.browserstackJSON),
+                    configExists = grunt.file.exists(configPath);
+
+                return configExists ? grunt.file.readJSON(configPath) : {};
+            }());
+
             this.aws = (function() {
                 var configPath = path.join(process.env.HOME, settings.awsJSON),
                     configExists = grunt.file.exists(configPath);
@@ -75,8 +82,10 @@ module.exports = function(grunt) {
         var protractorTask = 'protractor:' + ((browser === 'all') ? '' : browser) + ':' + (env || settings.defaultE2EEnv);
 
         grunt.task.run('connect:sandbox');
-        if (env !== 'local') {
+        if (env === 'saucelabs') {
             grunt.task.run('sauceconnect:e2e');
+        } else if (env === 'browserstack') {
+            grunt.task.run('browserstacktunnel:e2e');
         }
         grunt.task.run(protractorTask);
     });
