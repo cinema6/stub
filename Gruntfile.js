@@ -86,6 +86,8 @@ module.exports = function(grunt) {
             grunt.task.run('sauceconnect:e2e');
         } else if (env === 'browserstack') {
             grunt.task.run('browserstacktunnel:e2e');
+        } else if (env === 'local') {
+            grunt.task.run('updatewebdriver');
         }
         grunt.task.run(protractorTask);
     });
