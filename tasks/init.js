@@ -200,6 +200,27 @@ module.exports = function(grunt) {
                 copyResult(result, settings);
 
                 return getInput([{
+                    name: 'browserstackJSON',
+                    type: 'string',
+                    description: format('Location of BrowserStack Keys JSON File Relative to Home Dir', settings.browserstackJSON),
+                    default: settings.browserstackJSON
+                }]);
+            })
+            .then(function(result) {
+                copyResult(result, settings);
+
+                return getInput([{
+                    name: 'defaultE2EEnv',
+                    type: 'string',
+                    message: format('Default E2E Testing Environment. Can be local, saucelabs or browserstack.', settings.defaultE2EEnv),
+                    validator: /(local|saucelabs|browserstack)/,
+                    default: settings.defaultE2EEnv
+                }]);
+            })
+            .then(function(result) {
+                copyResult(result, settings);
+
+                return getInput([{
                     name: 's3TestBucket',
                     type: 'string',
                     description: format('S3 Bucket for Testing', settings.s3.test.bucket),
