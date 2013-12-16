@@ -81,8 +81,8 @@
                     url: '/experience'
                 });
         }])
-        .controller('AppController', ['$scope','$state','$log','$location', 'site', 'c6ImagePreloader', 'gsap', '$timeout',
-        function                     ( $scope , $state , $log , $location ,  site ,  c6ImagePreloader ,  gsap ,  $timeout ) {
+        .controller('AppController', ['$scope','$state','$log', 'site', 'c6ImagePreloader', 'gsap', '$timeout', 'googleAnalytics',
+        function                     ( $scope , $state , $log ,  site ,  c6ImagePreloader ,  gsap ,  $timeout ,  googleAnalytics ) {
             var self = this,
                 canChangeState = false;
 
@@ -159,10 +159,7 @@
                 $log.info('State Change Success: ' + fromState.name +
                           ' ===> ' + toState.name);
 
-                ga('send','pageview', {
-                    'page'  : $location.absUrl(),
-                    'title' : 'stub ' + toState.name
-                });
+                googleAnalytics('send', 'event', '$state', 'changed', toState.name);
             });
 
             $scope.AppCtrl = this;

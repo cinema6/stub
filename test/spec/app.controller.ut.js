@@ -12,6 +12,7 @@
             var site,
                 c6ImagePreloader,
                 gsap,
+                googleAnalytics,
                 $stateProvider,
                 $state,
                 appData,
@@ -34,6 +35,8 @@
                         }
                     }
                 };
+
+                googleAnalytics = jasmine.createSpy('googleAnalytics');
 
                 $stateProvider = {
                     state: jasmine.createSpy('$stateProvider.state()').andCallFake(function() {
@@ -83,6 +86,7 @@
 
                 module('c6.stub', function($provide) {
                     $provide.value('gsap', gsap);
+                    $provide.value('googleAnalytics', googleAnalytics);
                 });
 
                 inject(function(_$rootScope_, _$q_, _$timeout_, $controller, c6EventEmitter) {
@@ -235,6 +239,20 @@
                             AppCtrl.goto('landing');
                         });
                     });
+                });
+            });
+
+            describe('when $stateChangeSuccess is fired', function() {
+                beforeEach(function() {
+                    $rootScope.$broadcast('$stateChangeSuccess', { name: 'landing' }, {}, { name: '' });
+                });
+
+                it('should send an event to Google Analytics', function() {
+                    expect(googleAnalytics).toHaveBeenCalledWith('send', 'event', '$state', 'changed', 'landing');
+
+                    $rootScope.$broadcast('$stateChangeSuccess', { name: 'experience' }, {}, { name: 'landing' });
+
+                    expect(googleAnalytics).toHaveBeenCalledWith('send', 'event', '$state', 'changed', 'experience');
                 });
             });
 
