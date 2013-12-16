@@ -1,4 +1,5 @@
 (function() {
+    /* jshint camelcase:false */
     'use strict';
 
     module.exports = {
@@ -26,6 +27,10 @@
                 }
             },
             config: {
+                seleniumArgs: ['-browserTimeout=60'],
+                jasmineNodeOpts: {
+                    defaultTimeoutInterval: 45000
+                },
                 capabilities: {
                     name: '<%= package.name %>',
                 },
@@ -44,9 +49,6 @@
                     browser_version: '31.0',
                     os: 'Windows',
                     os_version: '7'
-                },
-                jasmineNodeOpts: {
-                    defaultTimeoutInterval: 45000
                 }
             }
         },
