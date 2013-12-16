@@ -47,8 +47,8 @@
                     libUrl('gsap/1.11.2-0-g79f8c87/TimelineMax.min.js'),
                     libUrl('angular/v1.1.5-0-g9a7035e/angular.min.js'),
                     libUrl('ui-router/0.2.0-0-g818b0d6/angular-ui-router.min.js'),
-                    libUrl('c6ui/v1.2.9-0-g6e55613/c6uilib.min.js'),
-                    libUrl('c6ui/v1.2.9-0-g6e55613/c6log.min.js')
+                    libUrl('c6ui/v1.2.12-0-g08ccc1d/c6uilib.min.js'),
+                    libUrl('c6ui/v1.2.12-0-g08ccc1d/c6log.min.js')
                 ];
             } else {
                 return [
@@ -58,8 +58,8 @@
                     libUrl('gsap/1.11.2-0-g79f8c87/TimelineMax.min.js'),
                     libUrl('angular/v1.1.5-0-g9a7035e/angular.js'),
                     libUrl('ui-router/0.2.0-0-g818b0d6/angular-ui-router.js'),
-                    libUrl('c6ui/v1.2.9-0-g6e55613/c6uilib.js'),
-                    libUrl('c6ui/v1.2.9-0-g6e55613/c6log.js')
+                    libUrl('c6ui/v1.2.12-0-g08ccc1d/c6uilib.js'),
+                    libUrl('c6ui/v1.2.12-0-g08ccc1d/c6log.js')
                 ];
             }
         }());
@@ -103,7 +103,7 @@
                     libUrl('angular/v1.1.5-0-g9a7035e/angular-mobile.js')
             ],
             nope: [
-                libUrl('c6ui/v1.2.9-0-g6e55613/css/c6uilib--hover.min.css'),
+                libUrl('c6ui/v1.2.12-0-g08ccc1d/css/c6uilib--hover.min.css'),
                 __C6_APP_BASE_URL__ + '/styles/main--hover.css'
             ],
             complete: function() {
