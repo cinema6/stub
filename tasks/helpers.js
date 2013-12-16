@@ -2,7 +2,8 @@
     'use strict';
 
     var grunt = require('grunt'),
-        crypto = require('crypto');
+        crypto = require('crypto'),
+        Q = require('q');
 
     module.exports = {
         myIP: function() {
@@ -52,6 +53,14 @@
 
             hash.update(txt);
             return (prefix + '-' + hash.digest('hex').substr(0,14));
+        },
+
+        QS3: function(s3) {
+            for (var prop in s3) {
+                if (typeof s3[prop] === 'function') {
+                    this[prop] = Q.nbind(s3[prop], s3);
+                }
+            }
         }
     };
 })();
