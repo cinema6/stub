@@ -3,7 +3,7 @@
 
     module.exports = {
         options: {
-            jar: 'tasks/BrowserStackTunnel.jar',
+            jar: 'tasks/resources/BrowserStackTunnel.jar',
             key: '<%= settings.browserstack.key %>',
             servers: [
                 {

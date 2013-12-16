@@ -3,7 +3,7 @@ module.exports = function(grunt) {
 
     var AWS = require('aws-sdk'),
         Q = require('q'),
-        Helpers = require('./helpers.js'),
+        Helpers = require('./resources/helpers.js'),
         escapeRegexp = require('escape-regexp');
 
     grunt.registerMultiTask('updatelib', 'replace references to old CDN lib versions with new ones', function(targetLib, targetVersion) {

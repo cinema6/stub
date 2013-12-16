@@ -3,7 +3,7 @@
 
     module.exports = {
         options: {
-            jar: 'tasks/Sauce-Connect.jar',
+            jar: 'tasks/resources/Sauce-Connect.jar',
             user: '<%= settings.saucelabs.user %>',
             key: '<%= settings.saucelabs.key %>'
         },

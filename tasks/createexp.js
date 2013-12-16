@@ -3,7 +3,7 @@ module.exports = function(grunt) {
 
     var prompt = require('prompt'),
         Q = require('q'),
-        helpers = require('./helpers.js');
+        helpers = require('./resources/helpers.js');
 
     grunt.registerTask('createexp', 'Create a Cinema6 experience', function() {
         var settings = grunt.config.get('settings'),
@@ -48,7 +48,7 @@ module.exports = function(grunt) {
             }
 
             function copyImgSet(src) {
-                var seed = 'tasks/hero--sample.',
+                var seed = 'tasks/resources/hero--sample.',
                     seeds = {
                         jpg: seed + 'jpg',
                         webp: seed + 'webp'
