@@ -6,30 +6,20 @@ module.exports = function(grunt) {
     var _ = grunt.util._,
         settings = grunt.file.readJSON('settings.json'),
         c6Settings = (function(settings) {
+            function loadGlobalConfig(relPath) {
+                var configPath = path.join(process.env.HOME, relPath),
+                    configExists = grunt.file.exists(configPath);
+
+                return configExists ? grunt.file.readJSON(configPath) : {};
+            }
+
             _.extend(this, settings);
 
             this.openBrowser = process.env.GRUNT_BROWSER;
 
-            this.saucelabs = (function() {
-                var configPath = path.join(process.env.HOME, settings.saucelabsJSON),
-                    configExists = grunt.file.exists(configPath);
-
-                return configExists ? grunt.file.readJSON(configPath) : {};
-            }());
-
-            this.browserstack = (function() {
-                var configPath = path.join(process.env.HOME, settings.browserstackJSON),
-                    configExists = grunt.file.exists(configPath);
-
-                return configExists ? grunt.file.readJSON(configPath) : {};
-            }());
-
-            this.aws = (function() {
-                var configPath = path.join(process.env.HOME, settings.awsJSON),
-                    configExists = grunt.file.exists(configPath);
-
-                return configExists ? grunt.file.readJSON(configPath) : {};
-            }());
+            this.saucelabs = loadGlobalConfig(settings.saucelabsJSON);
+            this.browserstack = loadGlobalConfig(settings.browserstackJSON);
+            this.aws = loadGlobalConfig(settings.awsJSON);
 
             return this;
         }.call({}, settings));
