@@ -11,6 +11,7 @@ logs
 results
 
 npm-debug.log
+protractor.conf.json
 node_modules/
 dist/
 .tmp/
