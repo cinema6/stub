@@ -154,6 +154,16 @@ Running "genid:o" (genid) task
 o-df80d6438ab29c
 ```
 
+##### updatelib:(target):(lib || *undefined*):(version || *undefined*)
+This task is configured with one target, app, which will update the index.html and main.js files with the most recent (or specified) lib/libs that are available on S3.
+
+ex:
+```bash
+$> grunt updatelib #upgrade all libs to the most recent version
+$> grunt updatelib:app:c6ui #upgrade c6ui to the most recent version
+$> grunt updatelib:app:gsap:1.11.2 # upgrade GSAP to version 1.11.2
+```
+
 ##### server
 This task will start a development server that uses the c6-sandbox. Your application will appear inside the Cinema6 site chrome, and the Cinema6 site API will be available.
 
