@@ -206,6 +206,14 @@ ex:
 $> grunt test:e2e:debug:iphone
 ```
 
+##### test
+This task will execute all unit and E2E tests. E2E tests will run in all browsers in the derfault environment.
+
+ex:
+```bash
+$> grunt test
+```
+
 ##### publish:collateral:('test' || 'production')
 This task will build and upload the collateral assets to the specified environment on S3.
 
