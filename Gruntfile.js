@@ -55,6 +55,11 @@ module.exports = function(grunt) {
      *
      *********************************************************************************************/
 
+    grunt.registerTask('test', 'run unit and E2E tests', [
+        'test:unit',
+        'test:e2e:all'
+    ]);
+
     grunt.registerTask('test:unit', 'run unit tests', [
         'jshint:all',
         'clean:build',
