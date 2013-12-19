@@ -2,12 +2,6 @@
     /* jshint -W106 */
     'use strict';
 
-    if (window$.location.toString().match(/cinema6\.com/)){
-        ga('create', 'UA-44457821-1', 'cinema6.com');
-    } else {
-        ga('create', 'UA-44457821-1', { 'cookieDomain' : 'none' });
-    }
-
     angular.module('c6.stub', window$.c6.kModDeps)
         .constant('c6Defines', window$.c6)
         .config(['$provide',

@@ -84,13 +84,21 @@
     c6.kLocal = (c6.kBaseUrl === 'assets');
     c6.kDebug = (c6.kEnv === 'dev' || c6.kEnv === 'staging');
     c6.kHasKarma = false;
+    c6.kLogFormats = c6.kDebug;
     c6.kLogLevels = (c6.kDebug) ? ['error','warn','log','info'] : [];
     c6.kVideoUrls = {
         local: c6.kBaseUrl + '/media',
         dev: 'http://s3.amazonaws.com/c6.dev/media/src/stub',
         cdn: 'http://cdn1.cinema6.com/src/stub'
     };
-    c6.kModDeps = ['ui.router', 'c6.ui'];
+    c6.kModDeps = ['ui.router', 'c6.ui', 'c6.log'];
+    
+    if (window.location.host.match(/\/\/(www\.)*cinema6.com/) !== null){
+        ga('create', 'UA-44457821-2', 'cinema6.com');
+    } else {
+        ga('create', 'UA-44457821-1', { 'cookieDomain' : 'none' });
+    }
+
 
     loadScriptsInOrder(libScripts, function() {
         var Modernizr = window.Modernizr;
