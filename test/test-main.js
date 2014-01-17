@@ -22,7 +22,7 @@
         local: 'assets/media',
         cdn: 'http://foo.cinema6.com/media/app'
     };
-    c6.kModDeps = ['ui.router', 'c6.ui', 'c6.log'];
+    c6.kModDeps = ['c6.ui', 'c6.log'];
 
     packageRequest.onload = function(event) {
         var settings = JSON.parse(event.target.response),
@@ -41,15 +41,14 @@
             baseUrl: '/base/' + appDir + '/assets/scripts',
 
             paths: {
-                angular: libUrl('angular/v1.1.5-0-g9a7035e/angular'),
-                angularMocks: libUrl('angular/v1.1.5-0-g9a7035e/angular-mocks'),
+                angular: libUrl('angular/v1.2.9-0-g07ee29c/angular'),
+                angularMocks: libUrl('angular/v1.2.9-0-g07ee29c/angular-mocks'),
                 jquery: libUrl('jquery/2.0.3-0-gf576d00/jquery'),
                 modernizr: libUrl('modernizr/modernizr.custom.71747'),
                 tweenmax: libUrl('gsap/1.11.2-0-g79f8c87/TweenMax.min'),
                 timelinemax: libUrl('gsap/1.11.2-0-g79f8c87/TimelineMax.min'),
-                uirouter: libUrl('ui-router/0.2.0-0-g818b0d6/angular-ui-router'),
-                c6ui: libUrl('c6ui/v1.2.9-0-g6e55613/c6uilib'),
-                c6log: libUrl('c6ui/v1.2.9-0-g6e55613/c6log'),
+                c6ui: libUrl('c6ui/v2.1.0-0-g235a9de/c6uilib'),
+                c6log: libUrl('c6ui/v2.1.0-0-g235a9de/c6log'),
                 templates: '/base/.tmp/templates'
             },
 
@@ -76,7 +75,7 @@
                     deps: ['app']
                 },
                 app: {
-                    deps: ['angular', 'angularMocks', 'modernizr', 'timelinemax', 'uirouter', 'c6ui', 'c6log']
+                    deps: ['angular', 'angularMocks', 'modernizr', 'timelinemax', 'c6ui', 'c6log']
                 }
             },
 
