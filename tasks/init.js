@@ -3,7 +3,8 @@ module.exports = function(grunt) {
 
     var prompt = require('prompt'),
         Q = require('q'),
-        escapeRegExp = require('escape-regexp');
+        escapeRegExp = require('escape-regexp'),
+        helpers = require('./resources/helpers');
 
     grunt.registerTask('init', 'Initialize the Stub project', function() {
         var settings = grunt.file.readJSON('settings.json'),
@@ -52,6 +53,17 @@ module.exports = function(grunt) {
             grunt.file.write('settings.json', JSON.stringify(settings, null, '    '));
             grunt.config.set('settings', settings);
             grunt.log.ok('Wrote settings.json');
+
+            // Write users.json to the correct location
+            grunt.file.write(process(settings.usersJSON), JSON.stringify([
+                {
+                    id: helpers.genId('u'),
+                    username: 'jtestmonkey',
+                    org: helpers.genId('o'),
+                    status: 'active'
+                }
+            ], null, '    '));
+            grunt.log.ok('Wrote users.json');
 
             // Insert module name into scripts
             scripts.forEach(function(script) {
@@ -164,6 +176,16 @@ module.exports = function(grunt) {
                     type: 'string',
                     description: format('Mock experiences.json File Location', settings.experiencesJSON),
                     default: settings.experiencesJSON
+                }]);
+            })
+            .then(function(result) {
+                copyResult(result, settings);
+
+                return getInput([{
+                    name: 'usersJSON',
+                    type: 'string',
+                    description: format('Mock users.json File Location', settings.usersJSON),
+                    default: settings.usersJSON
                 }]);
             })
             .then(function(result) {
