@@ -91,6 +91,9 @@ The directory where collateral assets will be stored. This folder will be create
 ###### experiencesJSON
 The location of experiences.json file that the sandbox will use to drive your application. This file will be created for you the first time you create an experience.
 
+###### usersJSON
+The location of users.json file that the sandbox will use to provide a user to your application. This file will be created for you when you initialize your project.
+
 ###### libUrl
 The URL prefix used to resolve 3rd-party libraries in unit tests.
 
